@@ -1,0 +1,11 @@
+{
+  "name": "ruler-cli",
+  "version": "1.0.0-SNAPSHOT",
+  "main": "insertBuild.js",
+  "license": "MIT",
+  "dependencies": {
+    "gitlog": "^4.0.0",
+    "mongodb": "^3.6.2",
+    "yargs": "^16.0.3"
+  }
+}
