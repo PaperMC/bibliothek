@@ -37,6 +37,8 @@ import io.papermc.bibliothek.http.HTTP;
 import io.papermc.bibliothek.http.error.UhOh;
 import io.papermc.bibliothek.json.JsonFactory;
 import io.swagger.v3.oas.annotations.Hidden;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -64,7 +66,9 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
       this.json.object(json -> {
         json.put("project", project.name);
         json.set("versions", this.json.array(versionsJson -> {
-          for(final Version version : ProjectsController.sortVersions(versions)) {
+          final List<Version> reverse = ProjectsController.sortVersions(versions);
+          Collections.reverse(reverse);
+          for(final Version version : reverse) {
             versionsJson.add(version.name);
           }
         }));
@@ -85,7 +89,9 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
         json.set("builds", this.json.object(buildsJson -> {
           buildsJson.put("latest", builds.get(builds.size() - 1).number);
           buildsJson.set("all", this.json.array(allJson -> {
-            for(final Build build : builds) {
+            final List<Build> reverse = new ArrayList<>(builds);
+            Collections.reverse(reverse);
+            for(final Build build : reverse) {
               allJson.add(build.number);
             }
           }));
