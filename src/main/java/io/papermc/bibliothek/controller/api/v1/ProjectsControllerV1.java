@@ -113,7 +113,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
   }
 
   @GetMapping("/v1/{project:[a-z]+}/{version:[0-9pre.-]+}/latest")
-  public ResponseEntity<?> latestBuild(final @PathVariable("project") String projectName, final @PathVariable("version") String versionName, final @PathVariable("build") int buildNumber) throws UhOh {
+  public ResponseEntity<?> latestBuild(final @PathVariable("project") String projectName, final @PathVariable("version") String versionName) throws UhOh {
     final Project project = this.getProject(projectName);
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getLatestBuild(project, version);
