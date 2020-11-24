@@ -154,7 +154,7 @@ async function run() {
     } else {
       console.log("Could not find changes between previous build and current build - inserting build with empty changes");
     }
-    const buildDownloads = [];
+    const buildDownloads = {};
     for(let download of downloads) {
       const info = download.split(":");
       if(info.length === 3) {
