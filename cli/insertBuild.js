@@ -26,7 +26,12 @@ const buildNumber = argv.buildNumber;
 const repositoryPath = argv.repositoryPath;
 const storagePath = argv.storagePath;
 // type:path:hash:name
-const downloads = argv.download;
+let downloads = argv.download;
+
+if(typeof downloads === "string") {
+  const tempDownloads = downloads;
+  downloads = [tempDownloads];
+}
 
 // Validate downloads
 let foundPrimary = false;
