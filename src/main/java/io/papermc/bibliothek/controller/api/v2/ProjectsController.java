@@ -233,9 +233,6 @@ public class ProjectsController extends AbstractProjectsController {
 
   @ApiResponse(
     responseCode = "200",
-    content = @Content(
-      mediaType = HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
-    ),
     headers = {
       @Header(
         name = "Content-Disposition",
@@ -256,7 +253,10 @@ public class ProjectsController extends AbstractProjectsController {
   )
   @GetMapping(
     value = "/v2/projects/{project:[a-z]+}/versions/{version:[0-9pre.-]+}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
-    produces = HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
+    produces = {
+      MediaType.APPLICATION_JSON_VALUE,
+      HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
+    }
   )
   @Operation(summary = "Downloads the given file from a build's data.")
   @SuppressWarnings("checkstyle:Indentation")
