@@ -44,11 +44,9 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 
 public abstract class AbstractProjectsController {
-  protected static final CacheControl PROJECTS_CACHE = HTTP.publicCacheSMA(Duration.ofDays(7));
-  protected static final CacheControl PROJECT_CACHE = HTTP.publicCacheSMA(Duration.ofMinutes(30));
-  protected static final CacheControl VERSION_CACHE = HTTP.publicCacheSMA(Duration.ofMinutes(5));
-  protected static final CacheControl BUILDS_CACHE = HTTP.publicCacheSMA(Duration.ofMillis(5));
-  protected static final CacheControl BUILD_CACHE = HTTP.publicCacheSMA(Duration.ofDays(7));
+  protected static final CacheControl CACHE_7_DAYS = HTTP.publicCacheSMA(Duration.ofDays(7));
+  protected static final CacheControl CACHE_30_MINUTES = HTTP.publicCacheSMA(Duration.ofMinutes(30));
+  protected static final CacheControl CACHE_5_MINUTES = HTTP.publicCacheSMA(Duration.ofMinutes(5));
 
   private final AppConfiguration downloadsConfig;
 

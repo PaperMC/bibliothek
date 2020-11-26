@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,7 +74,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
           }
         }));
       }),
-      PROJECT_CACHE
+      CACHE_30_MINUTES
     );
   }
 
@@ -97,7 +98,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
           }));
         }));
       }),
-      VERSION_CACHE
+      CACHE_5_MINUTES
     );
   }
 
@@ -106,7 +107,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
     final Project project = this.getProject(projectName);
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getBuild(project, version, buildNumber);
-    return this.build(project, version, build);
+    return this.build(project, version, build, CACHE_7_DAYS);
   }
 
   @GetMapping("/v1/{project:[a-z]+}/{version:[0-9pre.-]+}/{build:\\d+}/download")
@@ -123,7 +124,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
     final Project project = this.getProject(projectName);
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getLatestBuild(project, version);
-    return this.build(project, version, build);
+    return this.build(project, version, build, CACHE_5_MINUTES);
   }
 
   @GetMapping("/v1/{project:[a-z]+}/{version:[0-9pre.-]+}/latest/download")
@@ -135,14 +136,14 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
     return this.download(project, version, build, downloadName);
   }
 
-  private ResponseEntity<?> build(final Project project, final Version version, final Build build) throws UhOh {
+  private ResponseEntity<?> build(final Project project, final Version version, final Build build, final CacheControl cache) throws UhOh {
     return HTTP.ok(
       this.json.object(json -> {
         json.put("project", project.name);
         json.put("version", version.name);
         json.put("build", build.number);
       }),
-      BUILD_CACHE
+      cache
     );
   }
 

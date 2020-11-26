@@ -116,7 +116,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      PROJECTS_CACHE
+      CACHE_7_DAYS
     );
   }
 
@@ -150,7 +150,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      PROJECT_CACHE
+      CACHE_30_MINUTES
     );
   }
 
@@ -181,7 +181,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      VERSION_CACHE
+      CACHE_5_MINUTES
     );
   }
 
@@ -227,7 +227,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      BUILD_CACHE
+      CACHE_7_DAYS
     );
   }
 
@@ -299,7 +299,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      VERSION_CACHE
+      CACHE_5_MINUTES
     );
   }
 
@@ -359,7 +359,7 @@ public class ProjectsController extends AbstractProjectsController {
           }
         }));
       }),
-      BUILDS_CACHE
+      CACHE_5_MINUTES
     );
   }
 
