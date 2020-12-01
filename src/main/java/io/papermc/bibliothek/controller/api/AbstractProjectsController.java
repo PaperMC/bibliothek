@@ -66,7 +66,7 @@ public abstract class AbstractProjectsController {
     this.json = json;
   }
 
-  protected ResponseEntity<?> download(final Project project, final Version version, final Build build, final String downloadName) throws UhOh {
+  protected ResponseEntity<?> download(final Project project, final Version version, final Build build, final String downloadName, final CacheControl cache) throws UhOh {
     for(final Map.Entry<String, Download> download : build.downloads.entrySet()) {
       if(download.getValue().name.equals(downloadName)) {
         try {
@@ -75,7 +75,8 @@ public abstract class AbstractProjectsController {
               .resolve(project.name)
               .resolve(version.name)
               .resolve(String.valueOf(build.number))
-              .resolve(downloadName)
+              .resolve(downloadName),
+            cache
           );
         } catch(final IOException e) {
           throw UhOh.internalServerError(error -> error.put("error", "an internal error occurred while serving your download"));

@@ -269,7 +269,7 @@ public class ProjectsController extends AbstractProjectsController {
     final Project project = this.getProject(projectName);
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getBuild(project, version, buildNumber);
-    return this.download(project, version, build, downloadName);
+    return this.download(project, version, build, downloadName, CACHE_7_DAYS);
   }
 
   @ApiResponse(

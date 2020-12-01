@@ -116,7 +116,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getBuild(project, version, buildNumber);
     final String downloadName = this.downloadName(project, version, build);
-    return this.download(project, version, build, downloadName);
+    return this.download(project, version, build, downloadName, CACHE_7_DAYS);
   }
 
   @GetMapping("/v1/{project:[a-z]+}/{version:[0-9pre.-]+}/latest")
@@ -133,7 +133,7 @@ public class ProjectsControllerV1 extends AbstractProjectsController {
     final Version version = this.getVersion(project, versionName);
     final Build build = this.getLatestBuild(project, version);
     final String downloadName = this.downloadName(project, version, build);
-    return this.download(project, version, build, downloadName);
+    return this.download(project, version, build, downloadName, CACHE_5_MINUTES);
   }
 
   private ResponseEntity<?> build(final Project project, final Version version, final Build build, final CacheControl cache) throws UhOh {
