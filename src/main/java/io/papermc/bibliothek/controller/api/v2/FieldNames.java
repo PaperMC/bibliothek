@@ -21,19 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.controller.api.v2.response;
+package io.papermc.bibliothek.controller.api.v2;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
+public final class FieldNames {
+  public static final String PROJECTS = "projects";
 
-import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECTS;
+  public static final String PROJECT_ID = "project_id";
+  public static final String PROJECT_NAME = "project_name";
 
-@Schema
-public class ProjectsResponse {
-  @Schema(
-    name = PROJECTS,
-    pattern = "[a-z]+",
-    example = "[\"paper\", \"travertine\", \"waterfall\"]"
-  )
-  public List<String> projects;
+  public static final String VERSION_GROUPS = "version_groups";
+  public static final String VERSION_GROUP = "version_group";
+
+  public static final String VERSIONS = "versions";
+  public static final String VERSION = "version";
+  public static final String BUILDS = "builds";
+  public static final String BUILD = "build";
+  public static final String TIME = "time";
+
+  public static final String CHANGES = "changes";
+  static final String COMMIT = "commit";
+  static final String SUMMARY = "summary";
+  static final String MESSAGE = "message";
+
+  public static final String DOWNLOADS = "downloads";
+  static final String NAME = "name";
+  static final String SHA256 = "sha256";
+
+  private FieldNames() {
+  }
 }

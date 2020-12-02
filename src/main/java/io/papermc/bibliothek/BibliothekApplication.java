@@ -31,8 +31,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties({
   AppConfiguration.class
 })
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 @SpringBootApplication
+@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class BibliothekApplication {
   public static void main(final String[] args) {
     SpringApplication.run(BibliothekApplication.class, args);

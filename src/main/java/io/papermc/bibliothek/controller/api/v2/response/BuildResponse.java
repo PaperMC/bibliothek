@@ -30,41 +30,49 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.BUILD;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.CHANGES;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.DOWNLOADS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_ID;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_NAME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.TIME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSION;
+
 @Schema
 public class BuildResponse {
   @Schema(
-    name = "project_id",
+    name = PROJECT_ID,
     pattern = "[a-z]+",
     example = "paper"
   )
   public String projectId;
   @Schema(
-    name = "project_name",
+    name = PROJECT_NAME,
     example = "Paper"
   )
   public String projectName;
   @Schema(
-    name = "version",
+    name = VERSION,
     pattern = "[0-9pre.-]+",
     example = "1.16.4"
   )
   public String version;
   @Schema(
-    name = "build",
+    name = BUILD,
     pattern = "\\d+",
     example = "274"
   )
   public int build;
   @Schema(
-    name = "time"
+    name = TIME
   )
   public Instant time;
   @Schema(
-    name = "changes"
+    name = CHANGES
   )
   public List<Change> changes;
   @Schema(
-    name = "downloads",
+    name = DOWNLOADS,
     example = "{\"application\": {\"name\": \"paper-1.16.4-274.jar\", \"sha256\": \"a167fddcb40d50d1e8c913ed83bc21365691f0c006d51a38e17535fa6ecf2e53\"}}"
   )
   public Map<String, Download> downloads;

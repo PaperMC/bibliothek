@@ -26,27 +26,32 @@ package io.papermc.bibliothek.controller.api.v2.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_ID;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_NAME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSIONS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSION_GROUPS;
+
 @Schema
 public class ProjectResponse {
   @Schema(
-    name = "project_id",
+    name = PROJECT_ID,
     pattern = "[a-z]+",
     example = "paper"
   )
   public String projectId;
   @Schema(
-    name = "project_name",
+    name = PROJECT_NAME,
     example = "Paper"
   )
   public String projectName;
   @Schema(
-    name = "version_groups",
+    name = VERSION_GROUPS,
     pattern = "[0-9pre.-]+",
     example = "[\"1.15\", \"1.16\"]"
   )
   public List<String> versionGroups;
   @Schema(
-    name = "versions",
+    name = VERSIONS,
     pattern = "[0-9pre.-]+",
     example = "[\"1.16.3\", \"1.16.4\"]"
   )

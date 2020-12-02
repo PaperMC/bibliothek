@@ -68,31 +68,27 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.BUILD;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.BUILDS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.CHANGES;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.COMMIT;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.DOWNLOADS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.MESSAGE;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.NAME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECTS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_ID;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.PROJECT_NAME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.SHA256;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.SUMMARY;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.TIME;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSION;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSIONS;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSION_GROUP;
+import static io.papermc.bibliothek.controller.api.v2.FieldNames.VERSION_GROUPS;
+
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectsController extends AbstractProjectsController {
-  private static final String PROJECTS = "projects";
-
-  private static final String PROJECT_ID = "project_id";
-  private static final String PROJECT_NAME = "project_name";
-
-  private static final String VERSION_GROUPS = "version_groups";
-  private static final String VERSION_GROUP = "version_group";
-
-  private static final String VERSIONS = "versions";
-  private static final String VERSION = "version";
-  private static final String BUILDS = "builds";
-  private static final String BUILD = "build";
-  private static final String TIME = "time";
-
-  private static final String CHANGES = "changes";
-  private static final String COMMIT = "commit";
-  private static final String SUMMARY = "summary";
-  private static final String MESSAGE = "message";
-
-  private static final String DOWNLOADS = "downloads";
-  private static final String NAME = "name";
-  private static final String SHA256 = "sha256";
 
   @Autowired
   private ProjectsController(final AppConfiguration downloadsConfig, final ProjectCollection projects, final VersionGroupCollection versionGroups, final VersionCollection versions, final BuildCollection builds, final JsonFactory json) {
@@ -192,7 +188,7 @@ public class ProjectsController extends AbstractProjectsController {
     )
   )
   @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:[0-9pre.-]+}/builds/{build:\\d+}")
-  @Operation(summary = "Get all available builds for a version.")
+  @Operation(summary = "Get information related to a specific build.")
   @SuppressWarnings("checkstyle:Indentation")
   public ResponseEntity<?> projectBuild(
     final @Parameter(description = "The ID of the project.", example = "paper") @PathVariable("project") @Pattern(regexp = "[a-z]+") String projectName,
