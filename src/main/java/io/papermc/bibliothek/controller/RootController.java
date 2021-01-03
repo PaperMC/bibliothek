@@ -31,8 +31,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class RootController {
-  @GetMapping("/")
-  public ResponseEntity<?> home() {
+  @GetMapping({
+    "/",
+    "/docs" // without trailing /
+  })
+  public ResponseEntity<?> redirectToDocs() {
     return ResponseEntity.status(HttpStatus.FOUND)
       .location(URI.create("docs/"))
       .build();
