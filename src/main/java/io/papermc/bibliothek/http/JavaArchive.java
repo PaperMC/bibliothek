@@ -26,7 +26,7 @@ package io.papermc.bibliothek.http;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.kyori.coffee.functional.function.exceptional.Consumer1E;
+import net.kyori.coffee.functional.action.exceptional.Action1E;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +35,7 @@ import org.springframework.http.ResponseEntity;
 
 public class JavaArchive extends ResponseEntity<FileSystemResource> {
   public JavaArchive(final Path path, final CacheControl cache) throws IOException {
-    super(new FileSystemResource(path), Consumer1E.tap(new HttpHeaders(), headers -> {
+    super(new FileSystemResource(path), Action1E.tap(new HttpHeaders(), headers -> {
       headers.setCacheControl(cache);
       headers.setContentType(HTTP.APPLICATION_JAVA_ARCHIVE);
       headers.setLastModified(Files.getLastModifiedTime(path).toInstant());

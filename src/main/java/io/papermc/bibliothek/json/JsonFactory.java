@@ -26,7 +26,7 @@ package io.papermc.bibliothek.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import net.kyori.coffee.functional.function.Consumer1;
+import net.kyori.coffee.functional.action.Action1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +39,11 @@ public class JsonFactory {
     this.om = om;
   }
 
-  public ArrayNode array(final Consumer1<ArrayNode> consumer) {
-    return Consumer1.tap(this.om.createArrayNode(), consumer);
+  public ArrayNode array(final Action1<ArrayNode> consumer) {
+    return Action1.tap(this.om.createArrayNode(), consumer);
   }
 
-  public ObjectNode object(final Consumer1<ObjectNode> consumer) {
-    return Consumer1.tap(this.om.createObjectNode(), consumer);
+  public ObjectNode object(final Action1<ObjectNode> consumer) {
+    return Action1.tap(this.om.createObjectNode(), consumer);
   }
 }
