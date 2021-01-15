@@ -4,7 +4,7 @@
   "main": "insertBuild.js",
   "license": "MIT",
   "dependencies": {
-    "gitlog": "^4.0.0",
+    "gitlog": "^4.0.4",
     "mongodb": "^3.6.2",
     "yargs": "^16.2.0"
   }
