@@ -138,22 +138,19 @@ async function run() {
       "version": version.value._id
     }, {sort: {_id: -1}});
     let changes = [];
-    if(oldBuild !== null) {
-      const commits = gitlog({
-        repo: repositoryPath,
-        fields: ["hash", "subject", "rawBody"],
-        branch: oldBuild.changes.slice(0, 1)[0].commit + "...HEAD"
+    const lastBuild = oldBuild && oldBuild.changes.length ? oldBuild.changes.slice(0, 1)[0].commit : "HEAD^1";
+    const commits = gitlog({
+      repo: repositoryPath,
+      fields: ["hash", "subject", "rawBody"],
+      branch: lastBuild + "...HEAD"
+    });
+    commits.forEach(function (commit) {
+      changes.push({
+        "commit": commit.hash,
+        "summary": commit.subject,
+        "message": commit.rawBody
       });
-      commits.forEach(function (commit) {
-        changes.push({
-          "commit": commit.hash,
-          "summary": commit.subject,
-          "message": commit.rawBody
-        });
-      });
-    } else {
-      console.log("Could not find changes between previous build and current build - inserting build with empty changes");
-    }
+    });
     const buildDownloads = {};
     for(let download of downloads) {
       const info = download.split(":");
