@@ -4,11 +4,11 @@ ARG JVM_FLAVOR=hotspot
 FROM adoptopenjdk:${JAVA_VERSION}-jdk-${JVM_FLAVOR} AS builder
 WORKDIR /builddir
 
-COPY gradlew build.gradle settings.gradle ./
+COPY gradlew ./
 COPY gradle/ gradle/
-RUN ./gradlew --no-daemon # Download gradle and init
+RUN ./gradlew --help --no-daemon # Download gradle and init
 
-COPY license*.txt ./
+COPY license*.txt build.gradle settings.gradle ./
 COPY src/ src/
 RUN ./gradlew clean buildForDocker --no-daemon
 
@@ -19,9 +19,9 @@ ARG JVM_FLAVOR
 FROM adoptopenjdk:${JAVA_VERSION}-jre-${JVM_FLAVOR}
 WORKDIR /app
 
-RUN groupadd --system spring \
-    && useradd --system spring --gid spring \
-    && chown -R spring:spring /app
+RUN groupadd --system bibliothek \
+    && useradd --system bibliothek --gid bibliothek \
+    && chown -R bibliothek:bibliothek /app
 USER spring:spring
 
 VOLUME /data/storage
@@ -33,7 +33,7 @@ EXPOSE 8080
 # but they take precedence over config file
 # https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html
 ENV SPRING_CONFIG_LOCATION="optional:classpath:/,optional:classpath:/config/,file:./dockerdefaults.yaml,optional:file:./,optional:file:./config/"
-COPY ./dockerdefaults.yaml ./dockerdefaults.yaml
+COPY ./docker/dockerdefaults.yaml ./dockerdefaults.yaml
 
 COPY --from=builder /builddir/build/libs/docker/bibliothek.jar ./
 CMD ["java", "-jar", "/app/bibliothek.jar"]
