@@ -25,6 +25,7 @@ RUN groupadd --system spring \
 USER spring:spring
 
 VOLUME /data/storage
+EXPOSE 8080
 
 # We override default config location search path,
 # so that a custom file with defaults can be used
