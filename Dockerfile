@@ -24,25 +24,15 @@ RUN groupadd --system spring \
     && chown -R spring:spring /app
 USER spring:spring
 
-# TODO: Extract to local file?
-RUN printf '%s\n' '{\
-    "app": {\
-        "storagePath": "/data",\
-        "apiBaseUrl": "http://localhost/api"\
-    },\
-    "server": {\
-        "forward-headers-strategy": "framework",\
-        "port": "8080"\
-    }}' >| dockerdefaults.yaml
+VOLUME /data/storage
 
-VOLUME /data
-
-COPY --from=builder /builddir/build/libs/docker/bibliothek.jar ./
 # We override default config location search path,
 # so that a custom file with defaults can be used
 # Normally would use environment variables,
 # but they take precedence over config file
 # https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html
 ENV SPRING_CONFIG_LOCATION="optional:classpath:/,optional:classpath:/config/,file:./dockerdefaults.yaml,optional:file:./,optional:file:./config/"
+COPY ./dockerdefaults.yaml ./dockerdefaults.yaml
 
+COPY --from=builder /builddir/build/libs/docker/bibliothek.jar ./
 CMD ["java", "-jar", "/app/bibliothek.jar"]
