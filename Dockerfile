@@ -4,12 +4,7 @@ ARG JVM_FLAVOR=hotspot
 FROM adoptopenjdk:${JAVA_VERSION}-jdk-${JVM_FLAVOR} AS builder
 WORKDIR /build
 
-COPY gradlew ./
-COPY gradle/ gradle/
-RUN ./gradlew --help --no-daemon # Download gradle and init
-
-COPY license*.txt build.gradle settings.gradle ./
-COPY src/ src/
+COPY ./ ./
 RUN ./gradlew clean buildForDocker --no-daemon
 
 
