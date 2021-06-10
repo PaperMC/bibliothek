@@ -29,6 +29,18 @@ bootJar {
   launchScript()
 }
 
+// From StackOverflow: https://stackoverflow.com/a/53087407
+// Licensed under: CC BY-SA 4.0
+task buildForDocker(type: Copy){
+  from bootJar
+  into 'build/libs/docker'
+  rename { String fileName ->
+    // a simple way is to remove the "-$version" from the jar filename
+    // but you can customize the filename replacement rule as you wish.
+    fileName.replace("-$project.version", "")
+  }
+}
+
 repositories {
   mavenLocal()
   mavenCentral()
