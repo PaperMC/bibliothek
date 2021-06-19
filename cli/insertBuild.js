@@ -97,6 +97,7 @@ async function run() {
       },
       {
         new: true,
+        returnDocument: "after",
         upsert: true
       }
     );
@@ -113,6 +114,7 @@ async function run() {
       },
       {
         new: true,
+        returnDocument: "after",
         upsert: true
       }
     );
@@ -130,6 +132,7 @@ async function run() {
       },
       {
         new: true,
+        returnDocument: "after",
         upsert: true
       }
     );
