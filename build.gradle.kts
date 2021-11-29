@@ -1,14 +1,13 @@
 import net.kyori.indra.repository.sonatypeSnapshots
 
 plugins {
-  val indraVersion = "2.0.6"
-
-  id("io.spring.dependency-management") version "1.0.11.RELEASE"
-  id("net.kyori.indra") version indraVersion
-  id("net.kyori.indra.checkstyle") version indraVersion
-  id("net.kyori.indra.license-header") version indraVersion
-  id("org.springframework.boot") version "2.4.5"
   id("java")
+
+  alias(libs.plugins.indra)
+  alias(libs.plugins.indra.checkstyle)
+  alias(libs.plugins.indra.license.header)
+  alias(libs.plugins.spring.dependency.management)
+  alias(libs.plugins.spring.boot)
 }
 
 group = "io.papermc"
@@ -29,18 +28,18 @@ indra {
 }
 
 dependencies {
-  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-  checkstyle("ca.stellardrift:stylecheck:0.1")
-  implementation("com.vdurmont:semver4j:3.1.0")
-  implementation("net.kyori:coffee-functional:1.0.0-SNAPSHOT")
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
-  implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-  implementation("org.springframework.boot:spring-boot-starter-undertow")
-  implementation("org.springframework.boot:spring-boot-starter-validation")
-  implementation("org.springframework.boot:spring-boot-starter-web") {
+  annotationProcessor(libs.spring.boot.configuration.processor)
+  checkstyle(libs.stylecheck)
+  implementation(libs.semver4j)
+  implementation(libs.coffee)
+  implementation(libs.spring.doc)
+  implementation(libs.spring.boot.starter.data.mongodb)
+  implementation(libs.spring.boot.starter.undertow)
+  implementation(libs.spring.boot.starter.validation)
+  implementation(libs.spring.boot.starter.web) {
     exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat") // we use undertow
   }
-  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+  implementation(libs.spring.boot.starter.test) {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
 }

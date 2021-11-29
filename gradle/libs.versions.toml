@@ -1,0 +1,28 @@
+[versions]
+indra = "2.0.6"
+spring-dependency-management = "1.0.11.RELEASE"
+spring-boot = "2.4.5"
+spring-doc = "1.5.12"
+stylecheck = "0.1"
+semver4j = "3.1.0"
+coffee = "1.0.0-SNAPSHOT"
+
+[libraries]
+stylecheck = { group = "ca.stellardrift", name = "stylecheck", version.ref = "stylecheck" }
+semver4j = { group = "com.vdurmont", name = "semver4j", version.ref = "semver4j" }
+coffee = { group = "net.kyori", name = "coffee-functional", version.ref = "coffee" }
+
+spring-doc = { group = "org.springdoc", name = "springdoc-openapi-ui", version.ref = "spring-doc" }
+spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
+spring-boot-starter-data-mongodb = { group = "org.springframework.boot", name = "spring-boot-starter-data-mongodb" }
+spring-boot-starter-undertow = { group = "org.springframework.boot", name = "spring-boot-starter-undertow" }
+spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+
+[plugins]
+indra = { id = "net.kyori.indra", version.ref = "indra" }
+indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
+indra-license-header = { id = "net.kyori.indra.license-header", version.ref = "indra" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
