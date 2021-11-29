@@ -21,7 +21,7 @@ repositories {
 
 indra {
   javaVersions {
-    target(11)
+    target(17)
   }
 
   github("PaperMC", "bibliothek")
