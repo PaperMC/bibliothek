@@ -9,7 +9,7 @@ plugins {
   id "net.kyori.indra" version "$indraVersion"
   id "net.kyori.indra.checkstyle" version "$indraVersion"
   id "net.kyori.indra.license-header" version "$indraVersion"
-  id "org.springframework.boot" version "2.4.5"
+  id "org.springframework.boot" version "2.6.0"
   id "java"
 }
 
