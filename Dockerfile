@@ -1,7 +1,7 @@
-ARG JAVA_VERSION=16
+ARG JAVA_VERSION=17
 ARG JVM_FLAVOR=hotspot
 
-FROM adoptopenjdk:${JAVA_VERSION}-jdk-${JVM_FLAVOR} AS builder
+FROM openjdk:${JAVA_VERSION}-slim AS builder
 WORKDIR /build
 
 COPY ./ ./
@@ -11,7 +11,7 @@ RUN ./gradlew clean buildForDocker --no-daemon
 ARG JAVA_VERSION
 ARG JVM_FLAVOR
 
-FROM adoptopenjdk:${JAVA_VERSION}-jre-${JVM_FLAVOR}
+FROM openjdk:${JAVA_VERSION}-slim
 WORKDIR /app
 
 RUN groupadd --system bibliothek \
