@@ -1,7 +1,7 @@
 ARG JAVA_VERSION=17
 ARG JVM_FLAVOR=hotspot
 
-FROM openjdk:${JAVA_VERSION}-slim AS builder
+FROM openjdk:${JAVA_VERSION}-jdk-slim AS builder
 WORKDIR /build
 
 COPY ./ ./
