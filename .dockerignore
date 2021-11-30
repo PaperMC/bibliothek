@@ -2,7 +2,7 @@
 # Everything ignored by default
 *
 # Only whitelist what's needed
-!*.gradle
+!*.gradle.kts
 !docker/
 !gradle/
 !gradlew
