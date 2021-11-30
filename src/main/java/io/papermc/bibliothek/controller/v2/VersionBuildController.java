@@ -42,6 +42,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -108,6 +109,10 @@ public class VersionBuildController {
     int build,
     @Schema(name = "time")
     Instant time,
+    @Schema(name = "channel")
+    Build.Channel channel,
+    @Schema(name = "promoted")
+    boolean promoted,
     @Schema(name = "changes")
     List<Build.Change> changes,
     @Schema(name = "downloads")
@@ -120,6 +125,8 @@ public class VersionBuildController {
         version.name(),
         build.number(),
         build.time(),
+        Objects.requireNonNullElse(build.channel(), Build.Channel.DEFAULT),
+        Objects.requireNonNullElse(build.promoted(), false),
         build.changes(),
         build.downloads()
       );

@@ -43,6 +43,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Pattern;
@@ -124,6 +125,8 @@ public class VersionFamilyBuildsController {
           versions.get(build.version()).name(),
           build.number(),
           build.time(),
+          Objects.requireNonNullElse(build.channel(), Build.Channel.DEFAULT),
+          Objects.requireNonNullElse(build.promoted(), false),
           build.changes(),
           build.downloads()
         )).collect(Collectors.toList())
@@ -138,6 +141,10 @@ public class VersionFamilyBuildsController {
       int build,
       @Schema(name = "time")
       Instant time,
+      @Schema(name = "channel")
+      Build.Channel channel,
+      @Schema(name = "promoted")
+      boolean promoted,
       @Schema(name = "changes")
       List<Build.Change> changes,
       @Schema(name = "downloads")

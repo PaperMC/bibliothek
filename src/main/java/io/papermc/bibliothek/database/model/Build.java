@@ -23,11 +23,14 @@
  */
 package io.papermc.bibliothek.database.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -42,8 +45,19 @@ public record Build(
   int number,
   Instant time,
   List<Change> changes,
-  Map<String, Download> downloads
+  Map<String, Download> downloads,
+  @JsonProperty
+  @Nullable Channel channel,
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Nullable Boolean promoted
 ) {
+  public enum Channel {
+    @JsonProperty("default")
+    DEFAULT,
+    @JsonProperty("experimental")
+    EXPERIMENTAL;
+  }
+
   @Schema
   public static record Change(
     @Schema(name = "commit")
