@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,12 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.collection;
+package io.papermc.bibliothek.database.model;
 
-import io.papermc.bibliothek.database.document.Project;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.Objects;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public interface ProjectCollection extends MongoRepository<Project, ObjectId> {
-  Project findByName(final String name);
+@CompoundIndex(def = "{'project': 1, 'group': 1}")
+@CompoundIndex(def = "{'project': 1, 'name': 1}")
+@Document(collection = "versions")
+public record Version(
+  @Id ObjectId _id,
+  ObjectId project,
+  ObjectId group,
+  String name,
+  @Nullable Instant time
+) {
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public static final Comparator<Version> COMPARATOR = (o1, o2) -> {
+    final Comparable c1 = Objects.requireNonNullElseGet(o1.time(), o1::name);
+    final Comparable c2 = Objects.requireNonNullElseGet(o2.time(), o2::name);
+    return c1.compareTo(c2);
+  };
 }

@@ -28,18 +28,14 @@ indra {
 }
 
 dependencies {
-  annotationProcessor(libs.spring.boot.configuration.processor)
+  annotationProcessor("org.springframework.boot", "spring-boot-configuration-processor")
   checkstyle(libs.stylecheck)
-  implementation(libs.semver4j)
-  implementation(libs.coffee)
-  implementation(libs.spring.doc)
-  implementation(libs.spring.boot.starter.data.mongodb)
-  implementation(libs.spring.boot.starter.undertow)
-  implementation(libs.spring.boot.starter.validation)
-  implementation(libs.spring.boot.starter.web) {
-    exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat") // we use undertow
-  }
-  implementation(libs.spring.boot.starter.test) {
+  implementation(libs.jetbrains.annotations)
+  implementation(libs.springdoc.openapi.ui)
+  implementation("org.springframework.boot", "spring-boot-starter-data-mongodb")
+  implementation("org.springframework.boot", "spring-boot-starter-validation")
+  implementation("org.springframework.boot", "spring-boot-starter-web")
+  testImplementation("org.springframework.boot", "spring-boot-starter-test") {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
   }
 }

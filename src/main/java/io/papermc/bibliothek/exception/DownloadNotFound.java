@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.controller.api.v2;
+package io.papermc.bibliothek.exception;
 
-public final class FieldNames {
-  public static final String PROJECTS = "projects";
+import java.io.Serial;
 
-  public static final String PROJECT_ID = "project_id";
-  public static final String PROJECT_NAME = "project_name";
-
-  public static final String VERSION_GROUPS = "version_groups";
-  public static final String VERSION_GROUP = "version_group";
-
-  public static final String VERSIONS = "versions";
-  public static final String VERSION = "version";
-  public static final String BUILDS = "builds";
-  public static final String BUILD = "build";
-  public static final String TIME = "time";
-
-  public static final String CHANGES = "changes";
-  static final String COMMIT = "commit";
-  static final String SUMMARY = "summary";
-  static final String MESSAGE = "message";
-
-  public static final String DOWNLOADS = "downloads";
-  static final String NAME = "name";
-  static final String SHA256 = "sha256";
-
-  private FieldNames() {
-  }
+public class DownloadNotFound extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = -1709491048606353671L;
 }

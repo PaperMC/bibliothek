@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,18 +35,22 @@ public class AppConfiguration {
   private URL apiBaseUrl;
   private @NotNull Path storagePath;
 
+  @SuppressWarnings("checkstyle:MethodName")
   public URL getApiBaseUrl() {
     return this.apiBaseUrl;
   }
 
+  @SuppressWarnings("checkstyle:MethodName")
   public void setApiBaseUrl(final URL apiBaseUrl) {
     this.apiBaseUrl = apiBaseUrl;
   }
 
+  @SuppressWarnings("checkstyle:MethodName")
   public Path getStoragePath() {
     return this.storagePath;
   }
 
+  @SuppressWarnings("checkstyle:MethodName")
   public void setStoragePath(final Path storagePath) {
     this.storagePath = storagePath;
   }

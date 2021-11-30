@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.exception;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.Serial;
 
-@Schema
-public class Download {
-  @Schema(
-    name = "name",
-    pattern = "[a-z0-9._-]+",
-    example = "paper-1.16.4-274.jar"
-  )
-  public String name;
-  @Schema(
-    name = "sha256",
-    pattern = "[a-f0-9]{64}",
-    example = "a167fddcb40d50d1e8c913ed83bc21365691f0c006d51a38e17535fa6ecf2e53"
-  )
-  public String sha256;
-
-  public Download() {
-  }
-
-  public Download(final String name, final String sha256) {
-    this.name = name;
-    this.sha256 = sha256;
-  }
+public class BuildNotFound extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 4345323173317573160L;
 }

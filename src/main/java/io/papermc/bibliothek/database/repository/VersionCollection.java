@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.database.repository;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.papermc.bibliothek.database.model.Version;
+import java.util.List;
+import java.util.Optional;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-@Schema
-public class Change {
-  @Schema(name = "commit")
-  public String commit;
-  @Schema(name = "summary")
-  public String summary;
-  @Schema(name = "message")
-  public String message;
+@Repository
+public interface VersionCollection extends MongoRepository<Version, ObjectId> {
+  List<Version> findAllByProject(final ObjectId project);
 
-  public Change() {
-  }
+  List<Version> findAllByProjectAndGroup(final ObjectId project, final ObjectId group);
 
-  public Change(final String commit, final String summary, final String message) {
-    this.commit = commit;
-    this.summary = summary;
-    this.message = message;
-  }
+  Optional<Version> findByProjectAndName(final ObjectId project, final String name);
 }

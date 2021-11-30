@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.http.error;
+package io.papermc.bibliothek.database.repository;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.util.function.Consumer;
-import org.springframework.http.HttpStatus;
+import io.papermc.bibliothek.database.model.Project;
+import java.util.Optional;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-@SuppressWarnings("serial") // serialVersionUID
-public class UhOh extends Exception {
-  final HttpStatus status;
-  final Consumer<ObjectNode> consumer;
-
-  public static UhOh internalServerError(final Consumer<ObjectNode> consumer) {
-    return new UhOh(HttpStatus.INTERNAL_SERVER_ERROR, consumer);
-  }
-
-  public static UhOh notFound(final Consumer<ObjectNode> consumer) {
-    return new UhOh(HttpStatus.NOT_FOUND, consumer);
-  }
-
-  private UhOh(final HttpStatus status, final Consumer<ObjectNode> consumer) {
-    this.status = status;
-    this.consumer = consumer;
-  }
+@Repository
+public interface ProjectCollection extends MongoRepository<Project, ObjectId> {
+  Optional<Project> findByName(final String name);
 }
