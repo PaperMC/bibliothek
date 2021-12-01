@@ -38,7 +38,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -100,8 +99,8 @@ public class ProjectController {
       return new ProjectResponse(
         project.name(),
         project.friendlyName(),
-        families.stream().sorted(VersionFamily.COMPARATOR).map(VersionFamily::name).collect(Collectors.toList()),
-        versions.stream().sorted(Version.COMPARATOR).map(Version::name).collect(Collectors.toList())
+        families.stream().sorted(VersionFamily.COMPARATOR).map(VersionFamily::name).toList(),
+        versions.stream().sorted(Version.COMPARATOR).map(Version::name).toList()
       );
     }
   }

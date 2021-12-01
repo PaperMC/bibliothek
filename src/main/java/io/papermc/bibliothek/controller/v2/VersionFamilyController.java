@@ -39,7 +39,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -102,12 +101,12 @@ public class VersionFamilyController {
     @Schema(name = "versions")
     List<String> versions
   ) {
-    public static VersionFamilyResponse from(final Project project, final VersionFamily family, final List<Version> versions) {
+    static VersionFamilyResponse from(final Project project, final VersionFamily family, final List<Version> versions) {
       return new VersionFamilyResponse(
         project.name(),
         project.friendlyName(),
         family.name(),
-        versions.stream().sorted(Version.COMPARATOR).map(Version::name).collect(Collectors.toList())
+        versions.stream().sorted(Version.COMPARATOR).map(Version::name).toList()
       );
     }
   }

@@ -32,7 +32,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -72,7 +71,7 @@ public class ProjectsController {
     List<String> projects
   ) {
     public static ProjectsResponse from(final List<Project> projects) {
-      return new ProjectsResponse(projects.stream().map(Project::name).collect(Collectors.toList()));
+      return new ProjectsResponse(projects.stream().map(Project::name).toList());
     }
   }
 }

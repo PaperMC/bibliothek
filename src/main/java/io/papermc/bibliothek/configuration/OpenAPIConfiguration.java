@@ -27,6 +27,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.servers.Server;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,8 +44,9 @@ class OpenAPIConfiguration {
       new Info()
         .title("PaperMC API")
     );
-    if (configuration.getApiBaseUrl() != null) {
-      api.servers(List.of(new Server().url(configuration.getApiBaseUrl().toExternalForm())));
+    final URL apiBaseUrl = configuration.getApiBaseUrl();
+    if (apiBaseUrl != null) {
+      api.servers(List.of(new Server().url(apiBaseUrl.toExternalForm())));
     }
     return api;
   }

@@ -39,7 +39,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -106,7 +105,7 @@ public class VersionController {
         project.name(),
         project.friendlyName(),
         version.name(),
-        builds.stream().map(Build::number).collect(Collectors.toList())
+        builds.stream().map(Build::number).toList()
       );
     }
   }

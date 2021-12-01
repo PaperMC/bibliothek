@@ -120,7 +120,7 @@ public class VersionFamilyBuildsController {
         project.name(),
         project.friendlyName(),
         family.name(),
-        versions.values().stream().sorted(Version.COMPARATOR).map(Version::name).collect(Collectors.toList()),
+        versions.values().stream().sorted(Version.COMPARATOR).map(Version::name).toList(),
         builds.stream().map(build -> new VersionFamilyBuild(
           versions.get(build.version()).name(),
           build.number(),
@@ -129,7 +129,7 @@ public class VersionFamilyBuildsController {
           Objects.requireNonNullElse(build.promoted(), false),
           build.changes(),
           build.downloads()
-        )).collect(Collectors.toList())
+        )).toList()
       );
     }
 
