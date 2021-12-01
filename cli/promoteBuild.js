@@ -39,7 +39,7 @@ async function run() {
       }
     );
 
-    console.log(`Build ${argv.build} set promoted to ${argv.promoted}`);
+    console.log(`Build ${argv.build} promotion state changed to: ${argv.promoted}`);
   } finally {
     await client.close();
   }
