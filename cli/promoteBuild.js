@@ -30,11 +30,11 @@ async function run() {
 
     await database.collection("builds").updateOne(
       {
-        _id: build._id
+        _id: ObjectId(argv.build)
       },
       {
         $set: {
-          promoted: argv.promoted === "true"
+          promoted: argv.promoted === true
         }
       }
     );
