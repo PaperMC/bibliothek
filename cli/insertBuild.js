@@ -28,10 +28,10 @@ const repositoryPath = argv.repositoryPath;
 const storagePath = argv.storagePath;
 // type:path:hash:name
 let downloads = argv.download;
-const buildChannel = argv.buildChannel;
+const buildChannel = argv.buildChannel.toUpperCase();
 
 // Validate buildChannel
-if (buildChannel !== "default" && buildChannel !== "experimental") {
+if (buildChannel !== "DEFAULT" && buildChannel !== "EXPERIMENTAL") {
   console.log(`Invalid buildChannel: ${buildChannel}`);
   return;
 }
@@ -184,7 +184,7 @@ async function run() {
       "time": new Date(),
       "changes": changes,
       "downloads": buildDownloads,
-      "buildChannel": buildChannel
+      "channel": buildChannel
     });
     console.log("Inserted build " + buildNumber + " (channel: " + buildChannel + ") for project " + project.value.name + " (" + project.value._id + ") version " + version.value.name + " (" + version.value._id + "): " + build.insertedId);
   } finally {
