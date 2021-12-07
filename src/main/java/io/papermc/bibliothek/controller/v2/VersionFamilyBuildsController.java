@@ -82,7 +82,7 @@ public class VersionFamilyBuildsController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:[0-9.]+-?(?:pre|SNAPSHOT)?}/builds")
+  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}/builds")
   @Operation(summary = "Gets all available builds for a project's version group.")
   public ResponseEntity<?> familyBuilds(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -91,7 +91,7 @@ public class VersionFamilyBuildsController {
     final String projectName,
     @Parameter(description = "The version group name.")
     @PathVariable("family")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?") //
+    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
     final String familyName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
@@ -108,7 +108,7 @@ public class VersionFamilyBuildsController {
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version_group", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?", example = "1.18")
+    @Schema(name = "version_group", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
     String version_group,
     @Schema(name = "versions")
     List<String> versions,
@@ -135,7 +135,7 @@ public class VersionFamilyBuildsController {
 
     @Schema
     public static record VersionFamilyBuild(
-      @Schema(name = "version", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?", example = "1.18")
+      @Schema(name = "version", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
       String version,
       @Schema(name = "build", pattern = "\\d+", example = "10")
       int build,

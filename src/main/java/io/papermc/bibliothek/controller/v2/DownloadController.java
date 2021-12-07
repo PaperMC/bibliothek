@@ -98,7 +98,7 @@ public class DownloadController {
     }
   )
   @GetMapping(
-    value = "/v2/projects/{project:[a-z]+}/versions/{version:[0-9.]+-?(?:pre|SNAPSHOT)?}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
+    value = "/v2/projects/{project:[a-z]+}/versions/{version:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
     produces = {
       MediaType.APPLICATION_JSON_VALUE,
       HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
@@ -112,7 +112,7 @@ public class DownloadController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?") //
+    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
