@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,34 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.http;
+package io.papermc.bibliothek.exception;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.Duration;
-import org.springframework.http.CacheControl;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import java.io.Serial;
 
-public final class HTTP {
-  public static final String APPLICATION_JAVA_ARCHIVE_VALUE = "application/java-archive";
-  static final MediaType APPLICATION_JAVA_ARCHIVE = new MediaType("application", "java-archive");
+public class DownloadFailed extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = -1573093686056663600L;
 
-  private HTTP() {
-  }
-
-  public static <T> ResponseEntity<T> ok(final T response, final CacheControl cache) {
-    return ResponseEntity.ok().cacheControl(cache).body(response);
-  }
-
-  public static CacheControl publicCacheSMA(final Duration sMaxAge) {
-    return CacheControl.empty()
-      .cachePublic()
-      .sMaxAge(sMaxAge);
-  }
-
-  static ContentDisposition attachmentDisposition(final Path filename) {
-    return ContentDisposition.attachment().filename(filename.getFileName().toString(), StandardCharsets.UTF_8).build();
+  public DownloadFailed(final Throwable cause) {
+    super(cause);
   }
 }

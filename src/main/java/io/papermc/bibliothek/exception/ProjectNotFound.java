@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.exception;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import java.io.Serial;
 
-@Document("projects")
-public class Project {
-  public @Id ObjectId _id;
-
-  public @Indexed String name;
-  public String friendlyName;
-
-  public Project() {
-  }
-
-  public Project(final String name, final String friendlyName) {
-    this.name = name;
-    this.friendlyName = friendlyName;
-  }
+public class ProjectNotFound extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 210738408624095602L;
 }

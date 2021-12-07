@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,37 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.database.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @CompoundIndex(def = "{'project': 1, 'version': 1}")
 @CompoundIndex(def = "{'project': 1, 'version': 1, 'number': 1}")
-@Document("builds")
-public class Build {
-  @SuppressWarnings("unused")
-  public @Id ObjectId _id;
-
-  public ObjectId project;
-  public ObjectId version;
-  public int number;
-
-  public Instant time;
-
-  public List<Change> changes;
-
-  public Map<String, Download> downloads;
-
-  public Build() {
+@Document(collection = "builds")
+public record Build(
+  @Id ObjectId _id,
+  ObjectId project,
+  ObjectId version,
+  int number,
+  Instant time,
+  List<Change> changes,
+  Map<String, Download> downloads,
+  @JsonProperty
+  @Nullable Channel channel,
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Nullable Boolean promoted
+) {
+  public enum Channel {
+    @JsonProperty("default")
+    DEFAULT,
+    @JsonProperty("experimental")
+    EXPERIMENTAL;
   }
 
-  public Build(final int number) {
-    this.number = number;
+  @Schema
+  public static record Change(
+    @Schema(name = "commit")
+    String commit,
+    @Schema(name = "summary")
+    String summary,
+    @Schema(name = "message")
+    String message
+  ) {
+  }
+
+  @Schema
+  public static record Download(
+    @Schema(name = "name", pattern = "[a-z0-9._-]+", example = "paper-1.18-10.jar")
+    String name,
+    @Schema(name = "sha256", pattern = "[a-f0-9]{64}", example = "f065e2d345d9d772d5cf2a1ce5c495c4cc56eb2fcd6820e82856485fa19414c8")
+    String sha256
+  ) {
   }
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.http;
+package io.papermc.bibliothek.exception;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import net.kyori.coffee.functional.action.exceptional.Action1E;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.io.Serial;
 
-public class JavaArchive extends ResponseEntity<FileSystemResource> {
-  public JavaArchive(final Path path, final CacheControl cache) throws IOException {
-    super(new FileSystemResource(path), Action1E.tap(new HttpHeaders(), headers -> {
-      headers.setCacheControl(cache);
-      headers.setContentType(HTTP.APPLICATION_JAVA_ARCHIVE);
-      headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
-      headers.setContentDisposition(HTTP.attachmentDisposition(path.getFileName()));
-    }), HttpStatus.OK);
-  }
+public class BuildNotFound extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 4345323173317573160L;
 }

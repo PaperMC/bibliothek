@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.collection;
+package io.papermc.bibliothek.database.repository;
 
-import io.papermc.bibliothek.database.document.Build;
+import io.papermc.bibliothek.database.model.Build;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface BuildCollection extends MongoRepository<Build, ObjectId> {
   List<Build> findAllByProjectAndVersion(final ObjectId project, final ObjectId version);
 
   List<Build> findAllByProjectAndVersionIn(final ObjectId project, final Collection<ObjectId> version);
 
-  Build findByProjectAndVersionAndNumber(final ObjectId project, final ObjectId version, final int number);
+  Optional<Build> findByProjectAndVersionAndNumber(final ObjectId project, final ObjectId version, final int number);
 }

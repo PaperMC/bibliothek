@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ class OpenAPIConfiguration {
       new Info()
         .title("PaperMC API")
     );
-    if(configuration.getApiBaseUrl() != null) {
+    if (configuration.getApiBaseUrl() != null) {
       api.servers(List.of(new Server().url(configuration.getApiBaseUrl().toExternalForm())));
     }
     return api;

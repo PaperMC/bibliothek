@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.json;
+package io.papermc.bibliothek.database.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import net.kyori.coffee.functional.action.Action1;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Service
-public class JsonFactory {
-  private final ObjectMapper om;
-
-  @Autowired
-  private JsonFactory(final ObjectMapper om) {
-    this.om = om;
-  }
-
-  public ArrayNode array(final Action1<ArrayNode> consumer) {
-    return Action1.tap(this.om.createArrayNode(), consumer);
-  }
-
-  public ObjectNode object(final Action1<ObjectNode> consumer) {
-    return Action1.tap(this.om.createObjectNode(), consumer);
-  }
+@Document(collection = "projects")
+public record Project(
+  @Id ObjectId _id,
+  @Indexed String name,
+  String friendlyName
+) {
 }

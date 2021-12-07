@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,27 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.database.repository;
 
+import io.papermc.bibliothek.database.model.Project;
+import java.util.Optional;
 import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-@CompoundIndex(def = "{'project': 1, 'group': 1}")
-@CompoundIndex(def = "{'project': 1, 'name': 1}")
-@Document("versions")
-public class Version {
-  public @Id ObjectId _id;
-
-  public ObjectId project;
-  public ObjectId group;
-  public String name;
-
-  public Version() {
-  }
-
-  public Version(final String name) {
-    this.name = name;
-  }
+@Repository
+public interface ProjectCollection extends MongoRepository<Project, ObjectId> {
+  Optional<Project> findByName(final String name);
 }

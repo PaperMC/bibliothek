@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2020 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,30 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.document;
+package io.papermc.bibliothek.database.model;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.Objects;
+import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Schema
-public class Download {
-  @Schema(
-    name = "name",
-    pattern = "[a-z0-9._-]+",
-    example = "paper-1.16.4-274.jar"
-  )
-  public String name;
-  @Schema(
-    name = "sha256",
-    pattern = "[a-f0-9]{64}",
-    example = "a167fddcb40d50d1e8c913ed83bc21365691f0c006d51a38e17535fa6ecf2e53"
-  )
-  public String sha256;
-
-  public Download() {
-  }
-
-  public Download(final String name, final String sha256) {
-    this.name = name;
-    this.sha256 = sha256;
-  }
+@CompoundIndex(def = "{'project': 1, 'name': 1}")
+@Document(collection = "version_groups")
+public record VersionFamily(
+  @Id ObjectId _id,
+  ObjectId project,
+  String name,
+  @Nullable Instant time
+) {
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public static final Comparator<VersionFamily> COMPARATOR = (o1, o2) -> {
+    final Comparable c1 = Objects.requireNonNullElseGet(o1.time(), o1::name);
+    final Comparable c2 = Objects.requireNonNullElseGet(o2.time(), o2::name);
+    return c1.compareTo(c2);
+  };
 }
