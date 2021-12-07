@@ -175,7 +175,8 @@ async function run() {
       "number": buildNumber,
       "time": new Date(),
       "changes": changes,
-      "downloads": buildDownloads
+      "downloads": buildDownloads,
+      "promoted": false
     });
     console.log("Inserted build " + buildNumber + " for project " + project.value.name + " (" + project.value._id + ") version " + version.value.name + " (" + version.value._id + "): " + build.insertedId);
   } finally {
