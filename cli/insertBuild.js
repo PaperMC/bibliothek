@@ -5,16 +5,17 @@ const path = require("path");
 const yargs = require("yargs");
 
 const argv = yargs
-  .option("projectName", requiredOptionOf("string"))
-  .option("projectFriendlyName", requiredOptionOf("string"))
-  .option("versionGroupName", requiredOptionOf("string"))
-  .option("versionName", requiredOptionOf("string"))
-  .option("buildNumber", requiredOptionOf("number"))
-  .option("repositoryPath", requiredOptionOf("string"))
-  .option("storagePath", requiredOptionOf("string"))
-  .option("download", requiredOptionOf("string"))
+  .option("projectName", optionOf("string"))
+  .option("projectFriendlyName", optionOf("string"))
+  .option("versionGroupName", optionOf("string"))
+  .option("versionName", optionOf("string"))
+  .option("buildNumber", optionOf("number"))
+  .option("repositoryPath", optionOf("string"))
+  .option("storagePath", optionOf("string"))
+  .option("download", optionOf("string"))
+  .option("buildChannel", optionOf("string", false))
+  .default("buildChannel", "default")
   .help()
-  .alias("help", "h")
   .version(false)
   .argv;
 
@@ -27,6 +28,13 @@ const repositoryPath = argv.repositoryPath;
 const storagePath = argv.storagePath;
 // type:path:hash:name
 let downloads = argv.download;
+const buildChannel = argv.buildChannel.toUpperCase();
+
+// Validate buildChannel
+if (buildChannel !== "DEFAULT" && buildChannel !== "EXPERIMENTAL") {
+  console.log(`Invalid buildChannel: ${buildChannel}`);
+  return;
+}
 
 if(typeof downloads === "string") {
   const tempDownloads = downloads;
@@ -175,9 +183,10 @@ async function run() {
       "number": buildNumber,
       "time": new Date(),
       "changes": changes,
-      "downloads": buildDownloads
+      "downloads": buildDownloads,
+      "channel": buildChannel
     });
-    console.log("Inserted build " + buildNumber + " for project " + project.value.name + " (" + project.value._id + ") version " + version.value.name + " (" + version.value._id + "): " + build.insertedId);
+    console.log("Inserted build " + buildNumber + " (channel: " + buildChannel + ") for project " + project.value.name + " (" + project.value._id + ") version " + version.value.name + " (" + version.value._id + "): " + build.insertedId);
   } finally {
     await client.close();
   }
@@ -185,9 +194,9 @@ async function run() {
 
 run().catch(console.dir);
 
-function requiredOptionOf(type) {
+function optionOf(type, required = true) {
   return {
     type: type,
-    required: true
+    required: required
   };
 }
