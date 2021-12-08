@@ -62,14 +62,18 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings("checkstyle:FinalClass")
 public class VersionFamilyBuildsController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofMinutes(5));
-
   private final ProjectCollection projects;
   private final VersionFamilyCollection families;
   private final VersionCollection versions;
   private final BuildCollection builds;
 
   @Autowired
-  private VersionFamilyBuildsController(final ProjectCollection projects, final VersionFamilyCollection families, final VersionCollection versions, final BuildCollection builds) {
+  private VersionFamilyBuildsController(
+    final ProjectCollection projects,
+    final VersionFamilyCollection families,
+    final VersionCollection versions,
+    final BuildCollection builds
+  ) {
     this.projects = projects;
     this.families = families;
     this.versions = versions;
@@ -82,7 +86,7 @@ public class VersionFamilyBuildsController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}/builds")
+  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:" + Version.PATTERN + "}/builds")
   @Operation(summary = "Gets all available builds for a project's version group.")
   public ResponseEntity<?> familyBuilds(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -91,7 +95,7 @@ public class VersionFamilyBuildsController {
     final String projectName,
     @Parameter(description = "The version group name.")
     @PathVariable("family")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
+    @Pattern(regexp = Version.PATTERN) //
     final String familyName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
@@ -108,14 +112,14 @@ public class VersionFamilyBuildsController {
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version_group", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
+    @Schema(name = "version_group", pattern = Version.PATTERN, example = "1.18")
     String version_group,
     @Schema(name = "versions")
     List<String> versions,
     @Schema(name = "builds")
     List<VersionFamilyBuild> builds
   ) {
-    public static VersionFamilyBuildsResponse from(final Project project, final VersionFamily family, final Map<ObjectId, Version> versions, final List<Build> builds) {
+    static VersionFamilyBuildsResponse from(final Project project, final VersionFamily family, final Map<ObjectId, Version> versions, final List<Build> builds) {
       return new VersionFamilyBuildsResponse(
         project.name(),
         project.friendlyName(),
@@ -135,7 +139,7 @@ public class VersionFamilyBuildsController {
 
     @Schema
     public static record VersionFamilyBuild(
-      @Schema(name = "version", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
+      @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
       String version,
       @Schema(name = "build", pattern = "\\d+", example = "10")
       int build,

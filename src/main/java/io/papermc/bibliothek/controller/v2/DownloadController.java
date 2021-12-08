@@ -70,7 +70,12 @@ public class DownloadController {
   private final BuildCollection builds;
 
   @Autowired
-  private DownloadController(final AppConfiguration configuration, final ProjectCollection projects, final VersionCollection versions, final BuildCollection builds) {
+  private DownloadController(
+    final AppConfiguration configuration,
+    final ProjectCollection projects,
+    final VersionCollection versions,
+    final BuildCollection builds
+  ) {
     this.configuration = configuration;
     this.projects = projects;
     this.versions = versions;
@@ -98,7 +103,7 @@ public class DownloadController {
     }
   )
   @GetMapping(
-    value = "/v2/projects/{project:[a-z]+}/versions/{version:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
+    value = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
     produces = {
       MediaType.APPLICATION_JSON_VALUE,
       HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
@@ -112,7 +117,7 @@ public class DownloadController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
+    @Pattern(regexp = Version.PATTERN) //
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
@@ -146,8 +151,8 @@ public class DownloadController {
     throw new DownloadNotFound();
   }
 
-  public static class JavaArchive extends ResponseEntity<FileSystemResource> {
-    public JavaArchive(final Path path, final CacheControl cache) throws IOException {
+  private static class JavaArchive extends ResponseEntity<FileSystemResource> {
+    JavaArchive(final Path path, final CacheControl cache) throws IOException {
       super(new FileSystemResource(path), headersFor(path, cache), HttpStatus.OK);
     }
 

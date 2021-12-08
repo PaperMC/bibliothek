@@ -59,7 +59,7 @@ public record Build(
   }
 
   @Schema
-  public static record Change(
+  public record Change(
     @Schema(name = "commit")
     String commit,
     @Schema(name = "summary")
@@ -70,7 +70,7 @@ public record Build(
   }
 
   @Schema
-  public static record Download(
+  public record Download(
     @Schema(name = "name", pattern = "[a-z0-9._-]+", example = "paper-1.18-10.jar")
     String name,
     @Schema(name = "sha256", pattern = "[a-f0-9]{64}", example = "f065e2d345d9d772d5cf2a1ce5c495c4cc56eb2fcd6820e82856485fa19414c8")

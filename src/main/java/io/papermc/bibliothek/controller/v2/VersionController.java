@@ -59,7 +59,11 @@ public class VersionController {
   private final BuildCollection builds;
 
   @Autowired
-  private VersionController(final ProjectCollection projects, final VersionCollection versions, final BuildCollection builds) {
+  private VersionController(
+    final ProjectCollection projects,
+    final VersionCollection versions,
+    final BuildCollection builds
+  ) {
     this.projects = projects;
     this.versions = versions;
     this.builds = builds;
@@ -71,7 +75,7 @@ public class VersionController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}")
+  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}")
   @Operation(summary = "Gets information about a version.")
   public ResponseEntity<?> version(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -80,7 +84,7 @@ public class VersionController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
+    @Pattern(regexp = Version.PATTERN) //
     final String versionName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
@@ -95,12 +99,12 @@ public class VersionController {
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
+    @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
     String version,
     @Schema(name = "builds")
     List<Integer> builds
   ) {
-    public static VersionResponse from(final Project project, final Version version, final List<Build> builds) {
+    static VersionResponse from(final Project project, final Version version, final List<Build> builds) {
       return new VersionResponse(
         project.name(),
         project.friendlyName(),

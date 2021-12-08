@@ -70,7 +70,7 @@ public class ProjectsController {
     @Schema(name = "projects")
     List<String> projects
   ) {
-    public static ProjectsResponse from(final List<Project> projects) {
+    static ProjectsResponse from(final List<Project> projects) {
       return new ProjectsResponse(projects.stream().map(Project::name).toList());
     }
   }

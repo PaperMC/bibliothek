@@ -54,13 +54,16 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings("checkstyle:FinalClass")
 public class VersionFamilyController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofMinutes(5));
-
   private final ProjectCollection projects;
   private final VersionFamilyCollection families;
   private final VersionCollection versions;
 
   @Autowired
-  private VersionFamilyController(final ProjectCollection projects, final VersionFamilyCollection families, final VersionCollection versions) {
+  private VersionFamilyController(
+    final ProjectCollection projects,
+    final VersionFamilyCollection families,
+    final VersionCollection versions
+  ) {
     this.projects = projects;
     this.families = families;
     this.versions = versions;
@@ -72,7 +75,7 @@ public class VersionFamilyController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}")
+  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:" + Version.PATTERN + "}")
   @Operation(summary = "Gets information about a project's version group.")
   public ResponseEntity<?> family(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -81,7 +84,7 @@ public class VersionFamilyController {
     final String projectName,
     @Parameter(description = "The version group name.")
     @PathVariable("family")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
+    @Pattern(regexp = Version.PATTERN) //
     final String familyName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
@@ -96,7 +99,7 @@ public class VersionFamilyController {
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version_group", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
+    @Schema(name = "version_group", pattern = Version.PATTERN, example = "1.18")
     String version_group,
     @Schema(name = "versions")
     List<String> versions

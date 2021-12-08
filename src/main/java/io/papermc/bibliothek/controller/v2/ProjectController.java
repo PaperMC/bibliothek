@@ -58,7 +58,11 @@ public class ProjectController {
   private final VersionCollection versions;
 
   @Autowired
-  private ProjectController(final ProjectCollection projects, final VersionFamilyCollection families, final VersionCollection versions) {
+  private ProjectController(
+    final ProjectCollection projects,
+    final VersionFamilyCollection families,
+    final VersionCollection versions
+  ) {
     this.projects = projects;
     this.families = families;
     this.versions = versions;
@@ -95,7 +99,7 @@ public class ProjectController {
     @Schema(name = "versions")
     List<String> versions
   ) {
-    public static ProjectResponse from(final Project project, final List<VersionFamily> families, final List<Version> versions) {
+    static ProjectResponse from(final Project project, final List<VersionFamily> families, final List<Version> versions) {
       return new ProjectResponse(
         project.name(),
         project.friendlyName(),

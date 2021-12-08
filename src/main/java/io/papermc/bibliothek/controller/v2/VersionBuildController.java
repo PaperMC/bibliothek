@@ -63,7 +63,11 @@ public class VersionBuildController {
   private final BuildCollection builds;
 
   @Autowired
-  private VersionBuildController(final ProjectCollection projects, final VersionCollection versions, final BuildCollection builds) {
+  private VersionBuildController(
+    final ProjectCollection projects,
+    final VersionCollection versions,
+    final BuildCollection builds
+  ) {
     this.projects = projects;
     this.versions = versions;
     this.builds = builds;
@@ -75,7 +79,7 @@ public class VersionBuildController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?}/builds/{build:\\d+}")
+  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}")
   @Operation(summary = "Gets information related to a specific build.")
   public ResponseEntity<?> build(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -84,7 +88,7 @@ public class VersionBuildController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?") //
+    @Pattern(regexp = Version.PATTERN) //
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
@@ -103,7 +107,7 @@ public class VersionBuildController {
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version", pattern = "[0-9.]+-?(?:pre|SNAPSHOT)?(?:[0-9.]+)?", example = "1.18")
+    @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
     String version,
     @Schema(name = "build", pattern = "\\d+", example = "10")
     int build,
@@ -118,7 +122,7 @@ public class VersionBuildController {
     @Schema(name = "downloads")
     Map<String, Build.Download> downloads
   ) {
-    public static BuildResponse from(final Project project, final Version version, final Build build) {
+    static BuildResponse from(final Project project, final Version version, final Build build) {
       return new BuildResponse(
         project.name(),
         project.friendlyName(),

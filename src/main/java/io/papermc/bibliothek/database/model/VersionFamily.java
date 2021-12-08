@@ -23,9 +23,11 @@
  */
 package io.papermc.bibliothek.database.model;
 
+import io.papermc.bibliothek.util.BringOrderToChaos;
+import io.papermc.bibliothek.util.NameSource;
+import io.papermc.bibliothek.util.TimeSource;
 import java.time.Instant;
 import java.util.Comparator;
-import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
@@ -39,11 +41,6 @@ public record VersionFamily(
   ObjectId project,
   String name,
   @Nullable Instant time
-) {
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public static final Comparator<VersionFamily> COMPARATOR = (o1, o2) -> {
-    final Comparable c1 = Objects.requireNonNullElseGet(o1.time(), o1::name);
-    final Comparable c2 = Objects.requireNonNullElseGet(o2.time(), o2::name);
-    return c1.compareTo(c2);
-  };
+) implements NameSource, TimeSource {
+  public static final Comparator<VersionFamily> COMPARATOR = BringOrderToChaos.timeOrNameComparator();
 }
