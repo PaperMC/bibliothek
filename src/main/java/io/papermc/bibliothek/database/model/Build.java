@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import org.bson.types.ObjectId;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -76,5 +77,8 @@ public record Build(
     @Schema(name = "sha256", pattern = "[a-f0-9]{64}", example = "f065e2d345d9d772d5cf2a1ce5c495c4cc56eb2fcd6820e82856485fa19414c8")
     String sha256
   ) {
+    // NOTE: this pattern cannot contain any capturing groups
+    @Language("RegExp")
+    public static final String PATTERN = "[a-zA-Z0-9._-]+";
   }
 }

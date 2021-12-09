@@ -103,7 +103,7 @@ public class DownloadController {
     }
   )
   @GetMapping(
-    value = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}/downloads/{download:[a-z0-9._-]+}",
+    value = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}/downloads/{download:" + Build.Download.PATTERN + "}",
     produces = {
       MediaType.APPLICATION_JSON_VALUE,
       HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
@@ -125,7 +125,7 @@ public class DownloadController {
     final int buildNumber,
     @Parameter(description = "A download of the build.")
     @PathVariable("download")
-    @Pattern(regexp = "[a-z0-9._-]+") //
+    @Pattern(regexp = Build.Download.PATTERN) //
     final String downloadName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
