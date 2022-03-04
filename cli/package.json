@@ -5,7 +5,9 @@
   "license": "MIT",
   "dependencies": {
     "gitlog": "^4.0.4",
+    "jmespath": "^0.16.0",
     "mongodb": "^4.2.1",
+    "node-fetch": "2.6.7",
     "yargs": "^17.3.0"
   }
 }

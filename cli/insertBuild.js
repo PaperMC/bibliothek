@@ -1,6 +1,8 @@
 const fs = require("fs");
 const gitlog = require("gitlog").default;
 const {MongoClient} = require("mongodb");
+const fetch = require("node-fetch");
+const jmespath = require("jmespath");
 const path = require("path");
 const yargs = require("yargs");
 
@@ -92,6 +94,10 @@ const client = new MongoClient("mongodb://localhost:27017", {
 });
 
 async function run() {
+  const versionManifest2 = await fetch("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json").then(res => res.json());
+  const versionGroupTime = jmespath.search(versionManifest2, "versions[?id == '" + versionGroupName + "'].releaseTime")[0];
+  const versionTime = jmespath.search(versionManifest2, "versions[?id == '" + versionName + "'].releaseTime")[0];
+
   try {
     await client.connect();
     const database = client.db("library"); // "library" instead of "bibliothek" is intentional here
@@ -117,7 +123,8 @@ async function run() {
       {
         $setOnInsert: {
           "project": project.value._id,
-          "name": versionGroupName
+          "name": versionGroupName,
+          "time": versionGroupTime
         }
       },
       {
@@ -135,7 +142,8 @@ async function run() {
         $setOnInsert: {
           "project": project.value._id,
           "group": versionGroup.value._id,
-          "name": versionName
+          "name": versionName,
+          "time": versionTime
         }
       },
       {
