@@ -33,6 +33,7 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class AppConfiguration {
   private URL apiBaseUrl;
+  private String apiTitle;
   private @NotNull Path storagePath;
 
   @SuppressWarnings("checkstyle:MethodName")
@@ -43,6 +44,16 @@ public class AppConfiguration {
   @SuppressWarnings("checkstyle:MethodName")
   public void setApiBaseUrl(final URL apiBaseUrl) {
     this.apiBaseUrl = apiBaseUrl;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public String getApiTitle() {
+    return this.apiTitle;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public void setApiTitle(final String apiTitle) {
+    this.apiTitle = apiTitle;
   }
 
   @SuppressWarnings("checkstyle:MethodName")

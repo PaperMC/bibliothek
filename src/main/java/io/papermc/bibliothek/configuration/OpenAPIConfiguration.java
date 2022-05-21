@@ -42,7 +42,7 @@ class OpenAPIConfiguration {
     final OpenAPI api = new OpenAPI();
     api.info(
       new Info()
-        .title("PaperMC API")
+        .title(configuration.getApiTitle())
     );
     final URL apiBaseUrl = configuration.getApiBaseUrl();
     if (apiBaseUrl != null) {
