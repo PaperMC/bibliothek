@@ -38,6 +38,7 @@ public class AppConfiguration {
   private URL apiBaseUrl;
   private String apiTitle;
   private @NotNull Path storagePath;
+  private String publishSecret;
 
   @SuppressWarnings("checkstyle:MethodName")
   public URL getApiBaseUrl() {
@@ -57,6 +58,16 @@ public class AppConfiguration {
   @SuppressWarnings("checkstyle:MethodName")
   public void setApiTitle(final String apiTitle) {
     this.apiTitle = apiTitle;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public String getPublishSecret() {
+    return this.publishSecret;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public void setPublishSecret(final String publishSecret) {
+    this.publishSecret = publishSecret;
   }
 
   @SuppressWarnings("checkstyle:MethodName")

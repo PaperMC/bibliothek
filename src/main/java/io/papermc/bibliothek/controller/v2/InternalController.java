@@ -53,6 +53,7 @@ import org.kohsuke.github.GitHub;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -91,6 +92,7 @@ public class InternalController {
 
   @Hidden
   @PostMapping("/v2/projects/{project:[a-z]+}/actions/publish")
+  @Secured("ROLE_PUBLISH")
   public ResponseEntity<?> internalPublish(
     @PathVariable("project")
     final String projectName,
