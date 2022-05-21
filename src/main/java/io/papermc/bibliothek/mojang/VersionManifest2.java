@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2022 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.configuration;
+package io.papermc.bibliothek.mojang;
 
-import io.papermc.bibliothek.converter.ChannelConverter;
-import javax.servlet.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.time.Instant;
+import java.util.List;
+import org.jetbrains.annotations.Nullable;
 
-@Configuration
-class WebConfiguration implements WebMvcConfigurer {
-  @Override
-  public void addFormatters(final FormatterRegistry registry) {
-    registry.addConverter(new ChannelConverter());
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class VersionManifest2 {
+  public static final String URL = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json";
+
+  public List<Version> versions;
+
+  public @Nullable Version versionById(final String id) {
+    for (final Version version : this.versions) {
+      if (version.id.equals(id)) {
+        return version;
+      }
+    }
+    return null;
   }
 
-  @Bean
-  Filter shallowETagHeaderFilter() {
-    return new ShallowEtagHeaderFilter();
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static class Version {
+    public String id;
+    public Instant releaseTime;
   }
 }

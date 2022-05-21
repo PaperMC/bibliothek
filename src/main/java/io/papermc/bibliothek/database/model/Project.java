@@ -24,6 +24,7 @@
 package io.papermc.bibliothek.database.model;
 
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,6 +33,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public record Project(
   @Id ObjectId _id,
   @Indexed String name,
-  String friendlyName
+  String friendlyName,
+  @Nullable String gitRepository
 ) {
 }

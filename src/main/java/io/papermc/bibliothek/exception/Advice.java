@@ -24,6 +24,10 @@
 package io.papermc.bibliothek.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.Objects;
+import java.util.function.Consumer;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +51,14 @@ class Advice {
     return this.error(HttpStatus.NOT_FOUND, "Build not found.");
   }
 
+  @ExceptionHandler(BuildPublicationFailed.class)
+  @ResponseBody
+  public ResponseEntity<?> buildPublicationFailed(final BuildPublicationFailed exception) {
+    return this.error(HttpStatus.INTERNAL_SERVER_ERROR, "Build publication failed.", json -> {
+      json.put("errorCause", Objects.toString(exception.getCause(), "<unknown>"));
+    });
+  }
+
   @ExceptionHandler(DownloadFailed.class)
   @ResponseBody
   public ResponseEntity<?> downloadFailed(final DownloadFailed exception) {
@@ -65,6 +77,18 @@ class Advice {
     return this.error(HttpStatus.NOT_FOUND, "Project not found.");
   }
 
+  @ExceptionHandler(ManifestUnavailable.class)
+  @ResponseBody
+  public ResponseEntity<?> manifestUnavailable(final ManifestUnavailable exception) {
+    return this.error(HttpStatus.INTERNAL_SERVER_ERROR, "Version manifest is unavailable.");
+  }
+
+  @ExceptionHandler(ManifestVersionNotFound.class)
+  @ResponseBody
+  public ResponseEntity<?> manifestVersionNotFound(final ManifestVersionNotFound exception) {
+    return this.error(HttpStatus.INTERNAL_SERVER_ERROR, String.format("Version '%s' not found in manifest.", exception.version()));
+  }
+
   @ExceptionHandler(VersionNotFound.class)
   @ResponseBody
   public ResponseEntity<?> versionNotFound(final VersionNotFound exception) {
@@ -72,10 +96,15 @@ class Advice {
   }
 
   private ResponseEntity<?> error(final HttpStatus status, final String error) {
-    return new ResponseEntity<>(
-      this.json.createObjectNode()
-        .put("error", error),
-      status
-    );
+    return this.error(status, error, null);
+  }
+
+  private ResponseEntity<?> error(final HttpStatus status, final String error, final @Nullable Consumer<ObjectNode> consumer) {
+    final ObjectNode json = this.json.createObjectNode()
+      .put("error", error);
+    if (consumer != null) {
+      consumer.accept(json);
+    }
+    return new ResponseEntity<>(json, status);
   }
 }

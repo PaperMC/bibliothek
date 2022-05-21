@@ -23,6 +23,9 @@
  */
 package io.papermc.bibliothek.configuration;
 
+import io.papermc.bibliothek.database.model.Build;
+import io.papermc.bibliothek.database.model.Project;
+import io.papermc.bibliothek.database.model.Version;
 import java.net.URL;
 import java.nio.file.Path;
 import javax.validation.constraints.NotNull;
@@ -59,6 +62,18 @@ public class AppConfiguration {
   @SuppressWarnings("checkstyle:MethodName")
   public Path getStoragePath() {
     return this.storagePath;
+  }
+
+  public Path storagePathFor(final Project project, final Version version, final Build build, final Build.Download download) {
+    return this.storagePathFor(project, version, build.number(), download.name());
+  }
+
+  public Path storagePathFor(final Project project, final Version version, final int build, final String file) {
+    return this.getStoragePath()
+      .resolve(project.name())
+      .resolve(version.name())
+      .resolve(String.valueOf(build))
+      .resolve(file);
   }
 
   @SuppressWarnings("checkstyle:MethodName")

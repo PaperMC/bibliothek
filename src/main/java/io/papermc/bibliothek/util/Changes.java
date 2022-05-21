@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2022 PaperMC
+ * Copyright (c) 2019-2021 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,25 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.configuration;
+package io.papermc.bibliothek.util;
 
-import io.papermc.bibliothek.converter.ChannelConverter;
-import javax.servlet.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import io.papermc.bibliothek.database.model.Build;
+import org.kohsuke.github.GHCompare;
 
-@Configuration
-class WebConfiguration implements WebMvcConfigurer {
-  @Override
-  public void addFormatters(final FormatterRegistry registry) {
-    registry.addConverter(new ChannelConverter());
+public final class Changes {
+  private Changes() {
   }
 
-  @Bean
-  Filter shallowETagHeaderFilter() {
-    return new ShallowEtagHeaderFilter();
+  public static Build.Change toChange(final GHCompare.Commit commit) {
+    final String message = commit.getCommit().getMessage();
+    int index = message.indexOf('\n');
+    if (index == -1) {
+      index = message.length();
+    }
+    final String summary = message.substring(0, index);
+    return new Build.Change(commit.getSHA1(), summary, message);
   }
 }

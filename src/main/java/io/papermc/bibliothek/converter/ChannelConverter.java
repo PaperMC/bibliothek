@@ -21,25 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.configuration;
+package io.papermc.bibliothek.converter;
 
-import io.papermc.bibliothek.converter.ChannelConverter;
-import javax.servlet.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import io.papermc.bibliothek.database.model.Build;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.core.convert.converter.Converter;
 
-@Configuration
-class WebConfiguration implements WebMvcConfigurer {
+public class ChannelConverter implements Converter<String, Build.Channel> {
   @Override
-  public void addFormatters(final FormatterRegistry registry) {
-    registry.addConverter(new ChannelConverter());
-  }
-
-  @Bean
-  Filter shallowETagHeaderFilter() {
-    return new ShallowEtagHeaderFilter();
+  public Build.@Nullable Channel convert(final @NotNull String source) {
+    try {
+      return Build.Channel.valueOf(source);
+    } catch (final IllegalArgumentException e) {
+      return null;
+    }
   }
 }

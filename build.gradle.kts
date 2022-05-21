@@ -30,7 +30,9 @@ indra {
 dependencies {
   annotationProcessor("org.springframework.boot", "spring-boot-configuration-processor")
   checkstyle(libs.stylecheck)
+  implementation(libs.google.guava)
   implementation(libs.jetbrains.annotations)
+  implementation(libs.kohsuke.github.api)
   implementation(libs.springdoc.openapi.ui)
   implementation("org.springframework.boot", "spring-boot-starter-data-mongodb")
   implementation("org.springframework.boot", "spring-boot-starter-validation")

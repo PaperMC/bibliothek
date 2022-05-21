@@ -136,11 +136,7 @@ public class DownloadController {
       if (download.getValue().name().equals(downloadName)) {
         try {
           return new JavaArchive(
-            this.configuration.getStoragePath()
-              .resolve(project.name())
-              .resolve(version.name())
-              .resolve(String.valueOf(build.number()))
-              .resolve(download.getValue().name()),
+            this.configuration.storagePathFor(project, version, build, download.getValue()),
             CACHE
           );
         } catch (final IOException e) {

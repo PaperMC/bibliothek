@@ -21,25 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.configuration;
+package io.papermc.bibliothek.exception;
 
-import io.papermc.bibliothek.converter.ChannelConverter;
-import javax.servlet.Filter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.io.Serial;
 
-@Configuration
-class WebConfiguration implements WebMvcConfigurer {
-  @Override
-  public void addFormatters(final FormatterRegistry registry) {
-    registry.addConverter(new ChannelConverter());
-  }
+public class BuildPublicationFailed extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 7610888645597384416L;
 
-  @Bean
-  Filter shallowETagHeaderFilter() {
-    return new ShallowEtagHeaderFilter();
+  public BuildPublicationFailed(final Throwable cause) {
+    super(cause);
   }
 }

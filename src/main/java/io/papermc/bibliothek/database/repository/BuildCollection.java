@@ -38,4 +38,6 @@ public interface BuildCollection extends MongoRepository<Build, ObjectId> {
   List<Build> findAllByProjectAndVersionIn(final ObjectId project, final Collection<ObjectId> version);
 
   Optional<Build> findByProjectAndVersionAndNumber(final ObjectId project, final ObjectId version, final int number);
+
+  Optional<Build> findTopByProjectAndVersion(final ObjectId project, final ObjectId version);
 }

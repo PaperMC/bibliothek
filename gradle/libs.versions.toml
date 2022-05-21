@@ -9,6 +9,8 @@ spring-boot = { id = "org.springframework.boot", version = "2.6.0" }
 spring-dependency-management = { id = "io.spring.dependency-management", version = "1.0.11.RELEASE" }
 
 [libraries]
+google-guava = { group = "com.google.guava", name = "guava", version = "31.1-jre" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "23.0.0" }
+kohsuke-github-api = { group = "org.kohsuke", name = "github-api", version = "1.306" }
 springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-ui", version = "1.5.12" }
 stylecheck = { group = "ca.stellardrift", name = "stylecheck", version = "0.1" }

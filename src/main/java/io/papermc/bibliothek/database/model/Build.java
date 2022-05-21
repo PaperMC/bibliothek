@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.intellij.lang.annotations.Language;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -53,8 +54,12 @@ public record Build(
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Nullable Boolean promoted
 ) {
-  public Channel channelOrDefault() {
-    return Objects.requireNonNullElse(this.channel(), Build.Channel.DEFAULT);
+  public @NotNull Channel channelOrDefault() {
+    return channelOrDefault(this.channel());
+  }
+
+  public static @NotNull Channel channelOrDefault(final @Nullable Channel channel) {
+    return Objects.requireNonNullElse(channel, Channel.DEFAULT);
   }
 
   public boolean promotedOrDefault() {
