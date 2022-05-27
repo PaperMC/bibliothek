@@ -42,7 +42,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
@@ -129,8 +128,8 @@ public class VersionBuildController {
         version.name(),
         build.number(),
         build.time(),
-        Objects.requireNonNullElse(build.channel(), Build.Channel.DEFAULT),
-        Objects.requireNonNullElse(build.promoted(), false),
+        build.channelOrDefault(),
+        build.promotedOrDefault(),
         build.changes(),
         build.downloads()
       );

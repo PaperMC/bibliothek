@@ -29,6 +29,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +53,14 @@ public record Build(
   @JsonInclude(JsonInclude.Include.NON_NULL)
   @Nullable Boolean promoted
 ) {
+  public Channel channelOrDefault() {
+    return Objects.requireNonNullElse(this.channel(), Build.Channel.DEFAULT);
+  }
+
+  public boolean promotedOrDefault() {
+    return Objects.requireNonNullElse(this.promoted(), false);
+  }
+
   public enum Channel {
     @JsonProperty("default")
     DEFAULT,

@@ -26,11 +26,9 @@ package io.papermc.bibliothek.controller.v2;
 import io.papermc.bibliothek.database.model.Build;
 import io.papermc.bibliothek.database.model.Project;
 import io.papermc.bibliothek.database.model.Version;
-import io.papermc.bibliothek.database.model.VersionFamily;
 import io.papermc.bibliothek.database.repository.BuildCollection;
 import io.papermc.bibliothek.database.repository.ProjectCollection;
 import io.papermc.bibliothek.database.repository.VersionCollection;
-import io.papermc.bibliothek.database.repository.VersionFamilyCollection;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
 import io.papermc.bibliothek.util.HTTP;
@@ -43,10 +41,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.validation.constraints.Pattern;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -59,73 +54,64 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 @SuppressWarnings("checkstyle:FinalClass")
-public class VersionFamilyBuildsController {
+public class VersionBuildsController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofMinutes(5));
   private final ProjectCollection projects;
-  private final VersionFamilyCollection families;
   private final VersionCollection versions;
   private final BuildCollection builds;
 
   @Autowired
-  private VersionFamilyBuildsController(
+  private VersionBuildsController(
     final ProjectCollection projects,
-    final VersionFamilyCollection families,
     final VersionCollection versions,
     final BuildCollection builds
   ) {
     this.projects = projects;
-    this.families = families;
     this.versions = versions;
     this.builds = builds;
   }
 
   @ApiResponse(
     content = @Content(
-      schema = @Schema(implementation = VersionFamilyBuildsResponse.class)
+      schema = @Schema(implementation = BuildsResponse.class)
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:" + Version.PATTERN + "}/builds")
-  @Operation(summary = "Gets all available builds for a project's version group.")
-  public ResponseEntity<?> familyBuilds(
+  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds")
+  @Operation(summary = "Gets all available builds for a project's version.")
+  public ResponseEntity<?> builds(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
     @PathVariable("project")
     @Pattern(regexp = "[a-z]+") //
     final String projectName,
-    @Parameter(description = "The version group name.")
-    @PathVariable("family")
+    @Parameter(description = "A version of the project.")
+    @PathVariable("version")
     @Pattern(regexp = Version.PATTERN) //
-    final String familyName
+    final String versionName
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
-    final VersionFamily family = this.families.findByProjectAndName(project._id(), familyName).orElseThrow(VersionNotFound::new);
-    final Map<ObjectId, Version> versions = this.versions.findAllByProjectAndGroup(project._id(), family._id()).stream()
-      .collect(Collectors.toMap(Version::_id, Function.identity()));
-    final List<Build> builds = this.builds.findAllByProjectAndVersionIn(project._id(), versions.keySet());
-    return HTTP.cachedOk(VersionFamilyBuildsResponse.from(project, family, versions, builds), CACHE);
+    final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
+    final List<Build> builds = this.builds.findAllByProjectAndVersion(project._id(), version._id());
+    return HTTP.cachedOk(BuildsResponse.from(project, version, builds), CACHE);
   }
 
   @Schema
-  private record VersionFamilyBuildsResponse(
+  private record BuildsResponse(
     @Schema(name = "project_id", pattern = "[a-z]+", example = "paper")
     String project_id,
     @Schema(name = "project_name", example = "Paper")
     String project_name,
-    @Schema(name = "version_group", pattern = Version.PATTERN, example = "1.18")
-    String version_group,
-    @Schema(name = "versions")
-    List<String> versions,
+    @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
+    String version,
     @Schema(name = "builds")
-    List<VersionFamilyBuild> builds
+    List<VersionBuild> builds
   ) {
-    static VersionFamilyBuildsResponse from(final Project project, final VersionFamily family, final Map<ObjectId, Version> versions, final List<Build> builds) {
-      return new VersionFamilyBuildsResponse(
+    static BuildsResponse from(final Project project, final Version version, final List<Build> builds) {
+      return new BuildsResponse(
         project.name(),
         project.friendlyName(),
-        family.name(),
-        versions.values().stream().sorted(Version.COMPARATOR).map(Version::name).toList(),
-        builds.stream().map(build -> new VersionFamilyBuild(
-          versions.get(build.version()).name(),
+        version.name(),
+        builds.stream().map(build -> new VersionBuild(
           build.number(),
           build.time(),
           build.channelOrDefault(),
@@ -137,9 +123,7 @@ public class VersionFamilyBuildsController {
     }
 
     @Schema
-    public static record VersionFamilyBuild(
-      @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
-      String version,
+    public record VersionBuild(
       @Schema(name = "build", pattern = "\\d+", example = "10")
       int build,
       @Schema(name = "time")
