@@ -43,12 +43,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
+import java.util.function.BiFunction;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -135,12 +140,15 @@ public class DownloadController {
     for (final Map.Entry<String, Build.Download> download : build.downloads().entrySet()) {
       if (download.getValue().name().equals(downloadName)) {
         try {
-          return new JavaArchive(
-            this.configuration.getStoragePath()
+          return JavaArchive.resolve(
+            this.configuration,
+            download.getValue(),
+            (cdn, file) -> URI.create(String.format("%s/%s/%s/%d/%s", cdn, project.name(), version.name(), build.number(), file.name())),
+            (path, file) -> path
               .resolve(project.name())
               .resolve(version.name())
               .resolve(String.valueOf(build.number()))
-              .resolve(download.getValue().name()),
+              .resolve(file.name()),
             CACHE
           );
         } catch (final IOException e) {
@@ -151,17 +159,68 @@ public class DownloadController {
     throw new DownloadNotFound();
   }
 
-  private static class JavaArchive extends ResponseEntity<FileSystemResource> {
-    JavaArchive(final Path path, final CacheControl cache) throws IOException {
-      super(new FileSystemResource(path), headersFor(path, cache), HttpStatus.OK);
+  private static class JavaArchive extends ResponseEntity<AbstractResource> {
+    public static JavaArchive resolve(
+      final AppConfiguration config,
+      final Build.Download download,
+      final BiFunction<String, Build.Download, URI> cdnGetter,
+      final BiFunction<Path, Build.Download, Path> localGetter,
+      final CacheControl cache
+    ) throws IOException {
+      @Nullable IOException cdnException = null;
+      final @Nullable String cdnUrl = config.getCdnUrl();
+      if (cdnUrl != null) {
+        final @Nullable URI cdn = cdnGetter.apply(cdnUrl, download);
+        if (cdn != null) {
+          try {
+            return forUrl(download, cdn, cache);
+          } catch (final IOException e) {
+            cdnException = e;
+          }
+        }
+      }
+      @Nullable IOException localException = null;
+      final @Nullable Path local = localGetter.apply(config.getStoragePath(), download);
+      if (local != null) {
+        try {
+          return forPath(download, local, cache);
+        } catch (final IOException e) {
+          localException = e;
+        }
+      }
+      final IOException exception = new IOException("Could not resolve download via CDN or Local Storage");
+      if (cdnException != null) {
+        exception.addSuppressed(cdnException);
+      }
+      if (localException != null) {
+        exception.addSuppressed(localException);
+      }
+      throw exception;
     }
 
-    private static HttpHeaders headersFor(final Path path, final CacheControl cache) throws IOException {
+    private static JavaArchive forUrl(final Build.Download download, final URI uri, final CacheControl cache) throws IOException {
+      final UrlResource resource = new UrlResource(uri);
+      final HttpHeaders headers = headersFor(download, cache);
+      headers.setLastModified(resource.lastModified());
+      return new JavaArchive(resource, headers);
+    }
+
+    private static JavaArchive forPath(final Build.Download download, final Path path, final CacheControl cache) throws IOException {
+      final FileSystemResource resource = new FileSystemResource(path);
+      final HttpHeaders headers = headersFor(download, cache);
+      headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
+      return new JavaArchive(resource, headers);
+    }
+
+    private JavaArchive(final AbstractResource resource, final HttpHeaders headers) {
+      super(resource, headers, HttpStatus.OK);
+    }
+
+    private static HttpHeaders headersFor(final Build.Download download, final CacheControl cache) {
       final HttpHeaders headers = new HttpHeaders();
       headers.setCacheControl(cache);
-      headers.setContentDisposition(HTTP.attachmentDisposition(path.getFileName()));
+      headers.setContentDisposition(HTTP.attachmentDisposition(download.name()));
       headers.setContentType(HTTP.APPLICATION_JAVA_ARCHIVE);
-      headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
       return headers;
     }
   }

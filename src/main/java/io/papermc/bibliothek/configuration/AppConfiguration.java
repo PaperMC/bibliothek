@@ -26,6 +26,7 @@ package io.papermc.bibliothek.configuration;
 import jakarta.validation.constraints.NotNull;
 import java.net.URL;
 import java.nio.file.Path;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
@@ -36,6 +37,7 @@ public class AppConfiguration {
   private String apiTitle;
   private String apiVersion;
   private @NotNull Path storagePath;
+  private String cdnUrl;
 
   @SuppressWarnings("checkstyle:MethodName")
   public URL getApiBaseUrl() {
@@ -75,5 +77,15 @@ public class AppConfiguration {
   @SuppressWarnings("checkstyle:MethodName")
   public void setStoragePath(final Path storagePath) {
     this.storagePath = storagePath;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public @Nullable String getCdnUrl() {
+    return this.cdnUrl;
+  }
+
+  @SuppressWarnings("checkstyle:MethodName")
+  public void setCdnUrl(final String cdnUrl) {
+    this.cdnUrl = cdnUrl;
   }
 }
