@@ -1,14 +1,14 @@
 [versions]
-indra = "2.0.6"
+indra = "2.1.1"
 
 [plugins]
 indra = { id = "net.kyori.indra", version.ref = "indra" }
 indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 indra-license-header = { id = "net.kyori.indra.license-header", version.ref = "indra" }
-spring-boot = { id = "org.springframework.boot", version = "2.6.0" }
-spring-dependency-management = { id = "io.spring.dependency-management", version = "1.0.11.RELEASE" }
+spring-boot = { id = "org.springframework.boot", version = "2.7.2" }
+spring-dependency-management = { id = "io.spring.dependency-management", version = "1.0.12.RELEASE" }
 
 [libraries]
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "23.0.0" }
-springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-ui", version = "1.5.12" }
+springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-ui", version = "1.6.9" }
 stylecheck = { group = "ca.stellardrift", name = "stylecheck", version = "0.1" }
