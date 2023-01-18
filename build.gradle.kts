@@ -1,11 +1,9 @@
-import net.kyori.indra.repository.sonatypeSnapshots
-
 plugins {
   id("java")
 
   alias(libs.plugins.indra)
   alias(libs.plugins.indra.checkstyle)
-  alias(libs.plugins.indra.license.header)
+  alias(libs.plugins.spotless)
   alias(libs.plugins.spring.dependency.management)
   alias(libs.plugins.spring.boot)
 }
@@ -15,7 +13,6 @@ version = "1.0.0-SNAPSHOT"
 
 repositories {
   mavenCentral()
-  sonatypeSnapshots()
 }
 
 indra {
@@ -25,6 +22,16 @@ indra {
 
   github("PaperMC", "bibliothek")
   mitLicense()
+}
+
+spotless {
+  java {
+    endWithNewline()
+    importOrderFile(rootProject.file(".spotless/bibliothek.importorder"))
+    indentWithSpaces(2)
+    licenseHeaderFile(rootProject.file("license_header.txt"))
+    trimTrailingWhitespace()
+  }
 }
 
 dependencies {
