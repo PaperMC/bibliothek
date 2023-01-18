@@ -23,9 +23,9 @@
  */
 package io.papermc.bibliothek.configuration;
 
+import jakarta.validation.constraints.NotNull;
 import java.net.URL;
 import java.nio.file.Path;
-import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
