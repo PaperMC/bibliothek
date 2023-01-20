@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -53,7 +53,7 @@ class OpenAPIConfiguration {
 
   @Bean
   @SuppressWarnings("rawtypes") // nothing we can do, the API exposes it raw
-  OpenApiCustomiser sortSchemasAlphabetically() {
+  OpenApiCustomizer sortSchemasAlphabetically() {
     return openApi -> {
       final Map<String, Schema> schemas = openApi.getComponents().getSchemas();
       openApi.getComponents().setSchemas(new TreeMap<>(schemas));

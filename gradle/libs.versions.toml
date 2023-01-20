@@ -10,5 +10,5 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 
 [libraries]
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "23.1.0" }
-springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-ui", version = "1.6.14" }
+springdoc-openapi-starter-webmvc-ui = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version = "2.0.2" }
 stylecheck = { group = "ca.stellardrift", name = "stylecheck", version = "0.2.0" }
