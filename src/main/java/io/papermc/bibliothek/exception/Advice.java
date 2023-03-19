@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
 @SuppressWarnings("checkstyle:FinalClass")
@@ -69,6 +70,12 @@ class Advice {
   @ResponseBody
   public ResponseEntity<?> versionNotFound(final VersionNotFound exception) {
     return this.error(HttpStatus.NOT_FOUND, "Version not found.");
+  }
+
+  @ExceptionHandler(NoHandlerFoundException.class)
+  @ResponseBody
+  public ResponseEntity<?> endpointNotFound(final NoHandlerFoundException exception) {
+    return this.error(HttpStatus.NOT_FOUND, "Endpoint not found.");
   }
 
   private ResponseEntity<?> error(final HttpStatus status, final String error) {
