@@ -7,7 +7,7 @@ spring:
     throw-exception-if-no-handler-found: true
   web:
     resources:
-      add-mappings: true
+      add-mappings: false
 springdoc:
   api-docs:
     path: "/openapi"
@@ -17,3 +17,7 @@ springdoc:
     operations-sorter: "alpha"
     path: "/docs/"
     show-common-extensions: true
+server:
+  error:
+    whitelabel:
+      enabled: false
