@@ -36,8 +36,8 @@ import java.io.IOException;
 public class CorsFilter implements Filter {
 
   @Override
-  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+  public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+    final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
     httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET");
     chain.doFilter(request, response);
