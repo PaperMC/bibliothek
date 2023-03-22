@@ -27,11 +27,13 @@ import io.papermc.bibliothek.configuration.AppConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 @EnableConfigurationProperties({
   AppConfiguration.class
 })
 @SpringBootApplication
+@ServletComponentScan
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class BibliothekApplication {
   public static void main(final String[] args) {
