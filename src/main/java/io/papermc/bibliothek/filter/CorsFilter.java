@@ -21,22 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek;
+package io.papermc.bibliothek.filter;
 
-import io.papermc.bibliothek.configuration.AppConfiguration;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletComponentScan;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-@EnableConfigurationProperties({
-  AppConfiguration.class
-})
-@SpringBootApplication
-@ServletComponentScan
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
-public class BibliothekApplication {
-  public static void main(final String[] args) {
-    SpringApplication.run(BibliothekApplication.class, args);
+@WebFilter("/*")
+public class CorsFilter implements Filter {
+
+  @Override
+  public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+    final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+    httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET");
+    chain.doFilter(request, response);
   }
 }
