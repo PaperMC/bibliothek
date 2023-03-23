@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "matchPaths": [
+        "/**"
+      ],
+      "matchManagers": [
+        "gradle"
+      ],
+      "extends": ["schedule:daily"]
+    },
+    {
+      "matchPaths": [
+        "/cli/**"
+      ],
+      "matchManagers": [
+        "npm"
+      ],
+      "extends": ["schedule:daily"]
+    }
+  ]
+}
