@@ -14,6 +14,7 @@
       "matchManagers": [
         "gradle"
       ],
+      "addLabels": ["java"],
       "extends": ["schedule:daily"]
     },
     {
@@ -23,6 +24,7 @@
       "matchManagers": [
         "npm"
       ],
+      "addLabels": ["javascript"],
       "extends": ["schedule:daily"]
     }
   ]
