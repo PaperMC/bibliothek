@@ -21,24 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek;
+package io.papermc.bibliothek.configuration;
 
-import io.papermc.bibliothek.configuration.AppConfiguration;
-import io.papermc.bibliothek.configuration.StorageConfiguration;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletComponentScan;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.nio.file.Path;
+import java.util.List;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
-@EnableConfigurationProperties({
-  AppConfiguration.class,
-  StorageConfiguration.class
-})
-@SpringBootApplication
-@ServletComponentScan
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
-public class BibliothekApplication {
-  public static void main(final String[] args) {
-    SpringApplication.run(BibliothekApplication.class, args);
+@ConfigurationProperties(prefix = "app.storage")
+@Validated
+public record StorageConfiguration(
+  @NotNull Path cache,
+  @NotEmpty List<Source> sources
+) {
+  public record Source(
+    String name,
+    Type type,
+    String value
+  ) {
+    public enum Type {
+      LOCAL,
+      REMOTE;
+    }
   }
 }
