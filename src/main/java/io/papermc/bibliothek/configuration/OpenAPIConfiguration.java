@@ -43,6 +43,7 @@ class OpenAPIConfiguration {
     api.info(
       new Info()
         .title(configuration.getApiTitle())
+        .version(configuration.getApiVersion())
     );
     final URL apiBaseUrl = configuration.getApiBaseUrl();
     if (apiBaseUrl != null) {
