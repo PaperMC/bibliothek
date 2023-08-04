@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BibliothekApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <envs>
+      <env name="app_storagepath" value="work" />
+    </envs>
+    <module name="bibliothek.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.papermc.bibliothek.BibliothekApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
