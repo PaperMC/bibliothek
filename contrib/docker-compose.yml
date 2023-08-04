@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  bibliothek_mongo:
+    image: mongo:6-jammy
+    environment:
+      MONGO_INITDB_DATABASE: library
+    ports:
+      - "27017:27017"
+    volumes:
+      - bibliothek_mongo:/data/db
+
+volumes:
+  bibliothek_mongo:
+
