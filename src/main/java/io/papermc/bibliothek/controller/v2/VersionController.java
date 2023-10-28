@@ -29,6 +29,7 @@ import io.papermc.bibliothek.database.model.Version;
 import io.papermc.bibliothek.database.repository.BuildCollection;
 import io.papermc.bibliothek.database.repository.ProjectCollection;
 import io.papermc.bibliothek.database.repository.VersionCollection;
+import io.papermc.bibliothek.exception.ChannelNotFound;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
 import io.papermc.bibliothek.util.HTTP;
@@ -40,6 +41,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
 import java.time.Duration;
 import java.util.List;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -47,6 +49,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -85,12 +88,19 @@ public class VersionController {
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
     @Pattern(regexp = Version.PATTERN) //
-    final String versionName
+    final String versionName,
+    @Parameter(description = "The channel to filter builds.")
+    @RequestParam(required = false, defaultValue = "all") //
+    final String channel
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
     final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
-    final List<Build> builds = this.builds.findAllByProjectAndVersion(project._id(), version._id());
-    return HTTP.cachedOk(VersionResponse.from(project, version, builds), CACHE);
+    final boolean hasChannel = !channel.isBlank() && !channel.equalsIgnoreCase("all");
+    if (hasChannel && !EnumUtils.isValidEnumIgnoreCase(Build.Channel.class, channel)) {
+      throw new ChannelNotFound(channel);
+    }
+    final List<Build> builds = (!hasChannel) ? this.builds.findAllByProjectAndVersion(project._id(), version._id()) : this.builds.findAllByProjectAndVersionAndChannel(project._id(), version._id(), channel.toUpperCase());
+    return HTTP.cachedOk(VersionResponse.from(project, version, channel, builds), CACHE);
   }
 
   @Schema
@@ -100,14 +110,17 @@ public class VersionController {
     @Schema(name = "project_name", example = "Paper")
     String project_name,
     @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
+    String channel,
+    @Schema(name = "channel", examples = {"stable", "all"})
     String version,
     @Schema(name = "builds")
     List<Integer> builds
   ) {
-    static VersionResponse from(final Project project, final Version version, final List<Build> builds) {
+    static VersionResponse from(final Project project, final Version version, final String channel, final List<Build> builds) {
       return new VersionResponse(
         project.name(),
         project.friendlyName(),
+        channel,
         version.name(),
         builds.stream().map(Build::number).toList()
       );
