@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2023 PaperMC
+ * Copyright (c) 2019-2024 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
