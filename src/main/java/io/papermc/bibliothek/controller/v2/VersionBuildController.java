@@ -43,6 +43,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -91,7 +92,7 @@ public class VersionBuildController {
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
-    @Pattern(regexp = "\\d+") //
+    @Positive //
     final int buildNumber
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
