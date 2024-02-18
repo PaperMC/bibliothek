@@ -23,28 +23,30 @@
  */
 package io.papermc.bibliothek.util;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.time.Duration;
-import org.springframework.http.CacheControl;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.ResponseEntity;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 
-public final class HTTP {
-  private HTTP() {
+public final class MediaTypes {
+
+  public static final String APPLICATION_ZIP_VALUE = "application/zip";
+  public static final MediaType APPLICATION_ZIP = MediaType.parseMediaType(APPLICATION_ZIP_VALUE);
+
+  private MediaTypes() {
   }
 
-  public static <T> ResponseEntity<T> cachedOk(final T response, final CacheControl cache) {
-    return ResponseEntity.ok().cacheControl(cache).body(response);
+  public static @Nullable MediaType fromFileName(final String name) {
+    final int index = name.lastIndexOf('.');
+    if (index != -1) {
+      return fromFileExtension(name.substring(index + 1));
+    }
+    return null;
   }
 
-  public static CacheControl sMaxAgePublicCache(final Duration sMaxAge) {
-    return CacheControl.empty()
-      .cachePublic()
-      .sMaxAge(sMaxAge);
-  }
-
-  public static ContentDisposition attachmentDisposition(final Path filename) {
-    return ContentDisposition.attachment().filename(filename.getFileName().toString(), StandardCharsets.UTF_8).build();
+  public static @Nullable MediaType fromFileExtension(final String extension) {
+    return switch (extension) {
+      case "mcpack" -> APPLICATION_ZIP;
+      default -> MediaTypeFactory.getMediaType("." + extension).orElse(MediaType.APPLICATION_OCTET_STREAM);
+    };
   }
 }

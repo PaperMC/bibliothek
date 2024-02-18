@@ -36,6 +36,7 @@ import io.papermc.bibliothek.exception.DownloadNotFound;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
 import io.papermc.bibliothek.util.HTTP;
+import io.papermc.bibliothek.util.MediaTypes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -107,7 +108,7 @@ public class DownloadController {
     value = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}/downloads/{download:" + Build.Download.PATTERN + "}",
     produces = {
       MediaType.APPLICATION_JSON_VALUE,
-      HTTP.APPLICATION_JAVA_ARCHIVE_VALUE
+      MediaType.ALL_VALUE
     }
   )
   @Operation(summary = "Downloads the given file from a build's data.")
@@ -161,7 +162,7 @@ public class DownloadController {
       final HttpHeaders headers = new HttpHeaders();
       headers.setCacheControl(cache);
       headers.setContentDisposition(HTTP.attachmentDisposition(path.getFileName()));
-      headers.setContentType(HTTP.APPLICATION_JAVA_ARCHIVE);
+      headers.setContentType(MediaTypes.fromFileName(path.getFileName().toString()));
       headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
       return headers;
     }
