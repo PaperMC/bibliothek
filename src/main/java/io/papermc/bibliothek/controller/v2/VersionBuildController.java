@@ -39,6 +39,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -91,7 +92,7 @@ public class VersionBuildController {
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
-    @Pattern(regexp = "\\d+") //
+    @Positive //
     final int buildNumber
   ) {
     final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);

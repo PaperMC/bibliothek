@@ -42,6 +42,7 @@ import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -121,7 +122,7 @@ public class DownloadController {
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
-    @Pattern(regexp = "\\d+") //
+    @Positive //
     final int buildNumber,
     @Parameter(description = "A download of the build.")
     @PathVariable("download")
