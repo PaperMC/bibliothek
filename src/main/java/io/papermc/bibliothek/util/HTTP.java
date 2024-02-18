@@ -24,7 +24,6 @@
 package io.papermc.bibliothek.util;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.time.Duration;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
@@ -48,7 +47,7 @@ public final class HTTP {
       .sMaxAge(sMaxAge);
   }
 
-  public static ContentDisposition attachmentDisposition(final Path filename) {
-    return ContentDisposition.attachment().filename(filename.getFileName().toString(), StandardCharsets.UTF_8).build();
+  public static ContentDisposition attachmentDisposition(final String filename) {
+    return ContentDisposition.attachment().filename(filename, StandardCharsets.UTF_8).build();
   }
 }

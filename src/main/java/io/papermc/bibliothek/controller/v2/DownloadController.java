@@ -23,7 +23,6 @@
  */
 package io.papermc.bibliothek.controller.v2;
 
-import io.papermc.bibliothek.configuration.AppConfiguration;
 import io.papermc.bibliothek.database.model.Build;
 import io.papermc.bibliothek.database.model.Project;
 import io.papermc.bibliothek.database.model.Version;
@@ -35,6 +34,7 @@ import io.papermc.bibliothek.exception.DownloadFailed;
 import io.papermc.bibliothek.exception.DownloadNotFound;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
+import io.papermc.bibliothek.service.DownloadService;
 import io.papermc.bibliothek.util.HTTP;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,6 +49,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
@@ -65,22 +66,22 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings("checkstyle:FinalClass")
 public class DownloadController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofDays(7));
-  private final AppConfiguration configuration;
   private final ProjectCollection projects;
   private final VersionCollection versions;
   private final BuildCollection builds;
+  private final DownloadService service;
 
   @Autowired
   private DownloadController(
-    final AppConfiguration configuration,
     final ProjectCollection projects,
     final VersionCollection versions,
-    final BuildCollection builds
+    final BuildCollection builds,
+    final DownloadService service
   ) {
-    this.configuration = configuration;
     this.projects = projects;
     this.versions = versions;
     this.builds = builds;
+    this.service = service;
   }
 
   @ApiResponse(
@@ -133,17 +134,12 @@ public class DownloadController {
     final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
     final Build build = this.builds.findByProjectAndVersionAndNumber(project._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
 
-    for (final Map.Entry<String, Build.Download> download : build.downloads().entrySet()) {
-      if (download.getValue().name().equals(downloadName)) {
+    for (final Map.Entry<String, Build.Download> entry : build.downloads().entrySet()) {
+      final Build.Download download = entry.getValue();
+      if (download.name().equals(downloadName)) {
         try {
-          return new JavaArchive(
-            this.configuration.getStoragePath()
-              .resolve(project.name())
-              .resolve(version.name())
-              .resolve(String.valueOf(build.number()))
-              .resolve(download.getValue().name()),
-            CACHE
-          );
+          final Path path = this.service.resolve(project, version, build, download);
+          return JavaArchive.forPath(download, path, CACHE);
         } catch (final IOException e) {
           throw new DownloadFailed(e);
         }
@@ -152,17 +148,23 @@ public class DownloadController {
     throw new DownloadNotFound();
   }
 
-  private static class JavaArchive extends ResponseEntity<FileSystemResource> {
-    JavaArchive(final Path path, final CacheControl cache) throws IOException {
-      super(new FileSystemResource(path), headersFor(path, cache), HttpStatus.OK);
+  private static class JavaArchive extends ResponseEntity<AbstractResource> {
+    static JavaArchive forPath(final Build.Download download, final Path path, final CacheControl cache) throws IOException {
+      final FileSystemResource resource = new FileSystemResource(path);
+      final HttpHeaders headers = headersFor(download, cache);
+      headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
+      return new JavaArchive(resource, headers);
     }
 
-    private static HttpHeaders headersFor(final Path path, final CacheControl cache) throws IOException {
+    private JavaArchive(final AbstractResource resource, final HttpHeaders headers) {
+      super(resource, headers, HttpStatus.OK);
+    }
+
+    private static HttpHeaders headersFor(final Build.Download download, final CacheControl cache) {
       final HttpHeaders headers = new HttpHeaders();
       headers.setCacheControl(cache);
-      headers.setContentDisposition(HTTP.attachmentDisposition(path.getFileName()));
+      headers.setContentDisposition(HTTP.attachmentDisposition(download.name()));
       headers.setContentType(HTTP.APPLICATION_JAVA_ARCHIVE);
-      headers.setLastModified(Files.getLastModifiedTime(path).toInstant());
       return headers;
     }
   }

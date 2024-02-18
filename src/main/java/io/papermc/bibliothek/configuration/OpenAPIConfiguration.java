@@ -42,10 +42,10 @@ class OpenAPIConfiguration {
     final OpenAPI api = new OpenAPI();
     api.info(
       new Info()
-        .title(configuration.getApiTitle())
-        .version(configuration.getApiVersion())
+        .title(configuration.apiTitle())
+        .version(configuration.apiVersion())
     );
-    final URL apiBaseUrl = configuration.getApiBaseUrl();
+    final URL apiBaseUrl = configuration.apiBaseUrl();
     if (apiBaseUrl != null) {
       api.servers(List.of(new Server().url(apiBaseUrl.toExternalForm())));
     }

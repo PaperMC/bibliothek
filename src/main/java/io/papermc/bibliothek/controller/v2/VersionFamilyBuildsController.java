@@ -137,7 +137,7 @@ public class VersionFamilyBuildsController {
     }
 
     @Schema
-    public static record VersionFamilyBuild(
+    public record VersionFamilyBuild(
       @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
       String version,
       @Schema(name = "build", pattern = "\\d+", example = "10")
