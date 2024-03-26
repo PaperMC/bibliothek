@@ -23,6 +23,7 @@
  */
 package io.papermc.bibliothek.database.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,16 +55,19 @@ public record Build(
   @Nullable Boolean promoted
 ) {
   public Channel channelOrDefault() {
-    return Objects.requireNonNullElse(this.channel(), Build.Channel.DEFAULT);
+    return Objects.requireNonNullElse(this.channel(), Channel.DEFAULT);
   }
 
   public boolean promotedOrDefault() {
     return Objects.requireNonNullElse(this.promoted(), false);
   }
 
+  // These annotations are in reverse, but we can't fix this in v2.
   public enum Channel {
+    @JsonAlias("DEFAULT")
     @JsonProperty("default")
     DEFAULT,
+    @JsonAlias("EXPERIMENTAL")
     @JsonProperty("experimental")
     EXPERIMENTAL;
   }
