@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-@SuppressWarnings("checkstyle:FinalClass")
 public class ProjectsController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofDays(7));
   private final ProjectCollection projects;

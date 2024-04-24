@@ -1,8 +1,0 @@
----
-app:
-  # path to volume in Dockerfile - make sure to keep in sync
-  storagePath: "/data/storage"
-  apiBaseUrl: "http://localhost/api"
-server:
-  forward-headers-strategy: "framework"
-  port: 8080
