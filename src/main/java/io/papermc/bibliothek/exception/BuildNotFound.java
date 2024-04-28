@@ -24,7 +24,9 @@
 package io.papermc.bibliothek.exception;
 
 import java.io.Serial;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class BuildNotFound extends RuntimeException {
   @Serial
   private static final long serialVersionUID = 4345323173317573160L;

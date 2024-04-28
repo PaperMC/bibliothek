@@ -26,10 +26,12 @@ package io.papermc.bibliothek.configuration;
 import jakarta.validation.constraints.NotNull;
 import java.net.URL;
 import java.nio.file.Path;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @ConfigurationProperties(prefix = "app")
+@NullMarked
 @Validated
 public class AppConfiguration {
   private URL apiBaseUrl;

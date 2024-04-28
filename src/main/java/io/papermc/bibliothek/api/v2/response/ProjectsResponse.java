@@ -21,18 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.repository;
+package io.papermc.bibliothek.api.v2.response;
 
-import io.papermc.bibliothek.database.model.VersionFamily;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import org.jspecify.annotations.NullMarked;
 
-@Repository
-public interface VersionFamilyCollection extends MongoRepository<VersionFamily, ObjectId> {
-  List<VersionFamily> findAllByProject(final ObjectId project);
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_PROJECTS;
 
-  Optional<VersionFamily> findByProjectAndName(final ObjectId project, final String name);
+@NullMarked
+public record ProjectsResponse(
+  @JsonProperty(FIELD_PROJECTS)
+  @Schema(name = FIELD_PROJECTS)
+  List<String> projects
+) {
 }

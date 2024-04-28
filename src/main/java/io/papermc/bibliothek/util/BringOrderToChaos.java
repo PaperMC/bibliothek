@@ -26,7 +26,9 @@ package io.papermc.bibliothek.util;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.Objects;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class BringOrderToChaos {
   private BringOrderToChaos() {
   }

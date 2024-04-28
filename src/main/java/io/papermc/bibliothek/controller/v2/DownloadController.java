@@ -23,13 +23,14 @@
  */
 package io.papermc.bibliothek.controller.v2;
 
+import io.papermc.bibliothek.api.model.Download;
 import io.papermc.bibliothek.configuration.AppConfiguration;
-import io.papermc.bibliothek.database.model.Build;
-import io.papermc.bibliothek.database.model.Project;
-import io.papermc.bibliothek.database.model.Version;
-import io.papermc.bibliothek.database.repository.BuildCollection;
-import io.papermc.bibliothek.database.repository.ProjectCollection;
-import io.papermc.bibliothek.database.repository.VersionCollection;
+import io.papermc.bibliothek.database.model.BuildEntity;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.model.VersionEntity;
+import io.papermc.bibliothek.database.repository.BuildRepository;
+import io.papermc.bibliothek.database.repository.ProjectRepository;
+import io.papermc.bibliothek.database.repository.VersionRepository;
 import io.papermc.bibliothek.exception.BuildNotFound;
 import io.papermc.bibliothek.exception.DownloadFailed;
 import io.papermc.bibliothek.exception.DownloadNotFound;
@@ -49,6 +50,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
+import org.intellij.lang.annotations.Language;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.CacheControl;
@@ -61,21 +64,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@NullMarked
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
 public class DownloadController {
+  // NOTE: this pattern cannot contain any capturing groups
+  @Language("RegExp")
+  private static final String DOWNLOAD_NAME_PATTERN = "[a-zA-Z0-9._-]+";
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofDays(7));
   private final AppConfiguration configuration;
-  private final ProjectCollection projects;
-  private final VersionCollection versions;
-  private final BuildCollection builds;
+  private final ProjectRepository projects;
+  private final VersionRepository versions;
+  private final BuildRepository builds;
 
   @Autowired
   private DownloadController(
     final AppConfiguration configuration,
-    final ProjectCollection projects,
-    final VersionCollection versions,
-    final BuildCollection builds
+    final ProjectRepository projects,
+    final VersionRepository versions,
+    final BuildRepository builds
   ) {
     this.configuration = configuration;
     this.projects = projects;
@@ -104,7 +111,7 @@ public class DownloadController {
     }
   )
   @GetMapping(
-    value = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}/downloads/{download:" + Build.Download.PATTERN + "}",
+    value = "/v2/projects/{project:[a-z]+}/versions/{version:" + VersionEntity.PATTERN + "}/builds/{build:\\d+}/downloads/{download:" + DOWNLOAD_NAME_PATTERN + "}",
     produces = {
       MediaType.APPLICATION_JSON_VALUE,
       MediaType.ALL_VALUE
@@ -118,7 +125,7 @@ public class DownloadController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = Version.PATTERN) //
+    @Pattern(regexp = VersionEntity.PATTERN) //
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
@@ -126,14 +133,14 @@ public class DownloadController {
     final int buildNumber,
     @Parameter(description = "A download of the build.")
     @PathVariable("download")
-    @Pattern(regexp = Build.Download.PATTERN) //
+    @Pattern(regexp = DOWNLOAD_NAME_PATTERN) //
     final String downloadName
   ) {
-    final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
-    final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
-    final Build build = this.builds.findByProjectAndVersionAndNumber(project._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
+    final ProjectEntity project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
+    final VersionEntity version = this.versions.findByProjectAndName(project, versionName).orElseThrow(VersionNotFound::new);
+    final BuildEntity build = this.builds.findByProjectAndVersionAndNumber(project, version, buildNumber).orElseThrow(BuildNotFound::new);
 
-    for (final Map.Entry<String, Build.Download> download : build.downloads().entrySet()) {
+    for (final Map.Entry<String, Download> download : build.downloads().entrySet()) {
       if (download.getValue().name().equals(downloadName)) {
         try {
           return new JavaArchive(

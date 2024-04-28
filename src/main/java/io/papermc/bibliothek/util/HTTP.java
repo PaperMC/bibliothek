@@ -26,10 +26,12 @@ package io.papermc.bibliothek.util;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.ResponseEntity;
 
+@NullMarked
 public final class HTTP {
   private HTTP() {
   }

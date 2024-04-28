@@ -24,7 +24,9 @@
 package io.papermc.bibliothek.exception;
 
 import java.io.Serial;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class DownloadFailed extends RuntimeException {
   @Serial
   private static final long serialVersionUID = -1573093686056663600L;

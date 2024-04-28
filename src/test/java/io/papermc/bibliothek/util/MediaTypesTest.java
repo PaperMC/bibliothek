@@ -21,20 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.repository;
+package io.papermc.bibliothek.util;
 
-import io.papermc.bibliothek.database.model.Version;
-import java.util.List;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import org.jspecify.annotations.NullMarked;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
-@Repository
-public interface VersionCollection extends MongoRepository<Version, ObjectId> {
-  List<Version> findAllByProject(final ObjectId project);
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-  List<Version> findAllByProjectAndGroup(final ObjectId project, final ObjectId group);
-
-  Optional<Version> findByProjectAndName(final ObjectId project, final String name);
+@NullMarked
+class MediaTypesTest {
+  @Test
+  void testFromFileExtension() {
+    assertEquals(MediaType.APPLICATION_JSON, MediaTypes.fromFileExtension("json"));
+  }
 }

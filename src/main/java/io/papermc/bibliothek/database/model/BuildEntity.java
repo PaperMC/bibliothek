@@ -23,71 +23,102 @@
  */
 package io.papermc.bibliothek.database.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.papermc.bibliothek.api.model.Change;
+import io.papermc.bibliothek.api.model.Channel;
+import io.papermc.bibliothek.api.model.Download;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.bson.types.ObjectId;
-import org.intellij.lang.annotations.Language;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @CompoundIndex(def = "{'project': 1, 'version': 1}")
 @CompoundIndex(def = "{'project': 1, 'version': 1, 'number': 1}")
 @Document(collection = "builds")
-public record Build(
-  @Id ObjectId _id,
-  ObjectId project,
-  ObjectId version,
-  int number,
-  Instant time,
-  List<Change> changes,
-  Map<String, Download> downloads,
-  @JsonProperty
-  @Nullable Channel channel,
-  @JsonInclude(JsonInclude.Include.NON_NULL)
-  @Nullable Boolean promoted
-) {
+@NullMarked
+public class BuildEntity {
+  @Field
+  @Id
+  private ObjectId _id;
+
+  @DocumentReference
+  @Field
+  private ProjectEntity project;
+
+  @DocumentReference
+  @Field
+  private VersionEntity version;
+
+  @Field
+  private int number;
+
+  @Field
+  private Instant time;
+
+  @Field
+  private List<Change> changes;
+
+  @Field
+  private Map<String, Download> downloads;
+
+  @Field
+  private @Nullable Channel channel;
+
+  @Field
+  private @Nullable Boolean promoted;
+
+  public BuildEntity() {
+  }
+
+  @Id
+  public ObjectId _id() {
+    return this._id;
+  }
+
+  public ProjectEntity project() {
+    return this.project;
+  }
+
+  public VersionEntity version() {
+    return this.version;
+  }
+
+  public int number() {
+    return this.number;
+  }
+
+  public Instant time() {
+    return this.time;
+  }
+
+  public List<Change> changes() {
+    return this.changes;
+  }
+
+  public Map<String, Download> downloads() {
+    return this.downloads;
+  }
+
+  public @Nullable Channel channel() {
+    return this.channel;
+  }
+
   public Channel channelOrDefault() {
-    return Objects.requireNonNullElse(this.channel(), Build.Channel.DEFAULT);
+    return Objects.requireNonNullElse(this.channel(), Channel.DEFAULT);
+  }
+
+  public @Nullable Boolean promoted() {
+    return this.promoted;
   }
 
   public boolean promotedOrDefault() {
     return Objects.requireNonNullElse(this.promoted(), false);
-  }
-
-  public enum Channel {
-    @JsonProperty("default")
-    DEFAULT,
-    @JsonProperty("experimental")
-    EXPERIMENTAL;
-  }
-
-  @Schema
-  public record Change(
-    @Schema(name = "commit")
-    String commit,
-    @Schema(name = "summary")
-    String summary,
-    @Schema(name = "message")
-    String message
-  ) {
-  }
-
-  @Schema
-  public record Download(
-    @Schema(name = "name", pattern = "[a-z0-9._-]+", example = "paper-1.18-10.jar")
-    String name,
-    @Schema(name = "sha256", pattern = "[a-f0-9]{64}", example = "f065e2d345d9d772d5cf2a1ce5c495c4cc56eb2fcd6820e82856485fa19414c8")
-    String sha256
-  ) {
-    // NOTE: this pattern cannot contain any capturing groups
-    @Language("RegExp")
-    public static final String PATTERN = "[a-zA-Z0-9._-]+";
   }
 }

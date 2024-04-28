@@ -24,6 +24,7 @@
 package io.papermc.bibliothek.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
+@NullMarked
 class Advice {
   private final ObjectMapper json;
 

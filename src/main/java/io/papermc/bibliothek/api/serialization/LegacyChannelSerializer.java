@@ -21,13 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.exception;
+package io.papermc.bibliothek.api.serialization;
 
-import java.io.Serial;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import io.papermc.bibliothek.api.model.Channel;
+import java.io.IOException;
+import java.util.Locale;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ProjectNotFound extends RuntimeException {
-  @Serial
-  private static final long serialVersionUID = 210738408624095602L;
+public class LegacyChannelSerializer extends StdSerializer<Channel> {
+  public LegacyChannelSerializer() {
+    super(Channel.class);
+  }
+
+  @Override
+  public void serialize(final Channel value, final JsonGenerator gen, final SerializerProvider provider) throws IOException {
+    gen.writeString(value.name().toLowerCase(Locale.ROOT));
+  }
 }

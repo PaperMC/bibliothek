@@ -23,12 +23,15 @@
  */
 package io.papermc.bibliothek.controller.v2;
 
-import io.papermc.bibliothek.database.model.Build;
-import io.papermc.bibliothek.database.model.Project;
-import io.papermc.bibliothek.database.model.Version;
-import io.papermc.bibliothek.database.repository.BuildCollection;
-import io.papermc.bibliothek.database.repository.ProjectCollection;
-import io.papermc.bibliothek.database.repository.VersionCollection;
+import io.papermc.bibliothek.api.v2.model.Change2;
+import io.papermc.bibliothek.api.v2.model.Download2;
+import io.papermc.bibliothek.api.v2.response.BuildResponse;
+import io.papermc.bibliothek.database.model.BuildEntity;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.model.VersionEntity;
+import io.papermc.bibliothek.database.repository.BuildRepository;
+import io.papermc.bibliothek.database.repository.ProjectRepository;
+import io.papermc.bibliothek.database.repository.VersionRepository;
 import io.papermc.bibliothek.exception.BuildNotFound;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
@@ -41,9 +44,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -53,19 +54,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@NullMarked
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
 public class VersionBuildController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofDays(7));
-  private final ProjectCollection projects;
-  private final VersionCollection versions;
-  private final BuildCollection builds;
+  private final ProjectRepository projects;
+  private final VersionRepository versions;
+  private final BuildRepository builds;
 
   @Autowired
   private VersionBuildController(
-    final ProjectCollection projects,
-    final VersionCollection versions,
-    final BuildCollection builds
+    final ProjectRepository projects,
+    final VersionRepository versions,
+    final BuildRepository builds
   ) {
     this.projects = projects;
     this.versions = versions;
@@ -78,7 +80,7 @@ public class VersionBuildController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}")
+  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + VersionEntity.PATTERN + "}/builds/{build:\\d+}")
   @Operation(summary = "Gets information related to a specific build.")
   public ResponseEntity<?> build(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -87,52 +89,26 @@ public class VersionBuildController {
     final String projectName,
     @Parameter(description = "A version of the project.")
     @PathVariable("version")
-    @Pattern(regexp = Version.PATTERN) //
+    @Pattern(regexp = VersionEntity.PATTERN) //
     final String versionName,
     @Parameter(description = "A build of the version.")
     @PathVariable("build")
     @Positive //
     final int buildNumber
   ) {
-    final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
-    final Version version = this.versions.findByProjectAndName(project._id(), versionName).orElseThrow(VersionNotFound::new);
-    final Build build = this.builds.findByProjectAndVersionAndNumber(project._id(), version._id(), buildNumber).orElseThrow(BuildNotFound::new);
-    return HTTP.cachedOk(BuildResponse.from(project, version, build), CACHE);
-  }
-
-  @Schema
-  private record BuildResponse(
-    @Schema(name = "project_id", pattern = "[a-z]+", example = "paper")
-    String project_id,
-    @Schema(name = "project_name", example = "Paper")
-    String project_name,
-    @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
-    String version,
-    @Schema(name = "build", pattern = "\\d+", example = "10")
-    int build,
-    @Schema(name = "time")
-    Instant time,
-    @Schema(name = "channel")
-    Build.Channel channel,
-    @Schema(name = "promoted")
-    boolean promoted,
-    @Schema(name = "changes")
-    List<Build.Change> changes,
-    @Schema(name = "downloads")
-    Map<String, Build.Download> downloads
-  ) {
-    static BuildResponse from(final Project project, final Version version, final Build build) {
-      return new BuildResponse(
-        project.name(),
-        project.friendlyName(),
-        version.name(),
-        build.number(),
-        build.time(),
-        build.channelOrDefault(),
-        build.promotedOrDefault(),
-        build.changes(),
-        build.downloads()
-      );
-    }
+    final ProjectEntity project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
+    final VersionEntity version = this.versions.findByProjectAndName(project, versionName).orElseThrow(VersionNotFound::new);
+    final BuildEntity build = this.builds.findByProjectAndVersionAndNumber(project, version, buildNumber).orElseThrow(BuildNotFound::new);
+    return HTTP.cachedOk(new BuildResponse(
+      project.name(),
+      project.friendlyName(),
+      version.name(),
+      build.number(),
+      build.time(),
+      build.channelOrDefault(),
+      build.promotedOrDefault(),
+      Change2.map(build.changes()),
+      Download2.map(build.downloads())
+    ), CACHE);
   }
 }

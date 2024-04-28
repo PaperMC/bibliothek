@@ -21,13 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.exception;
+package io.papermc.bibliothek.api.model;
 
-import java.io.Serial;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ProjectNotFound extends RuntimeException {
-  @Serial
-  private static final long serialVersionUID = 210738408624095602L;
+public record Change(
+  String commit,
+  String summary,
+  String message
+) {
 }

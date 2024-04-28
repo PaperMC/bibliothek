@@ -21,13 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.exception;
+package io.papermc.bibliothek.database.repository;
 
-import java.io.Serial;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.model.VersionFamilyEntity;
+import java.util.List;
+import java.util.Optional;
+import org.bson.types.ObjectId;
 import org.jspecify.annotations.NullMarked;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
 @NullMarked
-public class ProjectNotFound extends RuntimeException {
-  @Serial
-  private static final long serialVersionUID = 210738408624095602L;
+@Repository
+public interface VersionFamilyRepository extends MongoRepository<VersionFamilyEntity, ObjectId> {
+  List<VersionFamilyEntity> findAllByProject(final ProjectEntity project);
+
+  Optional<VersionFamilyEntity> findByProjectAndName(final ProjectEntity project, final String name);
 }

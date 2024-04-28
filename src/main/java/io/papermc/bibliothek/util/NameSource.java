@@ -23,6 +23,9 @@
  */
 package io.papermc.bibliothek.util;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface NameSource {
   String name();
 }

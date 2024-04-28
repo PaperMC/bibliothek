@@ -24,11 +24,13 @@
 package io.papermc.bibliothek.configuration;
 
 import jakarta.servlet.Filter;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 @Configuration
+@NullMarked
 class WebConfiguration {
   @Bean
   Filter shallowETagHeaderFilter() {

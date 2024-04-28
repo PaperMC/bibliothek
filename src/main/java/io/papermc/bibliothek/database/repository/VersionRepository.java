@@ -23,19 +23,22 @@
  */
 package io.papermc.bibliothek.database.repository;
 
-import io.papermc.bibliothek.database.model.Build;
-import java.util.Collection;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.model.VersionEntity;
+import io.papermc.bibliothek.database.model.VersionFamilyEntity;
 import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+@NullMarked
 @Repository
-public interface BuildCollection extends MongoRepository<Build, ObjectId> {
-  List<Build> findAllByProjectAndVersion(final ObjectId project, final ObjectId version);
+public interface VersionRepository extends MongoRepository<VersionEntity, ObjectId> {
+  List<VersionEntity> findAllByProject(final ProjectEntity project);
 
-  List<Build> findAllByProjectAndVersionIn(final ObjectId project, final Collection<ObjectId> version);
+  List<VersionEntity> findAllByProjectAndGroup(final ProjectEntity project, final VersionFamilyEntity group);
 
-  Optional<Build> findByProjectAndVersionAndNumber(final ObjectId project, final ObjectId version, final int number);
+  Optional<VersionEntity> findByProjectAndName(final ProjectEntity project, final String name);
 }

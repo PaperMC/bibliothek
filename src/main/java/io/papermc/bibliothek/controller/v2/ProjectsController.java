@@ -23,8 +23,9 @@
  */
 package io.papermc.bibliothek.controller.v2;
 
-import io.papermc.bibliothek.database.model.Project;
-import io.papermc.bibliothek.database.repository.ProjectCollection;
+import io.papermc.bibliothek.api.v2.response.ProjectsResponse;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.repository.ProjectRepository;
 import io.papermc.bibliothek.util.HTTP;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +33,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.time.Duration;
 import java.util.List;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -40,14 +42,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@NullMarked
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
 public class ProjectsController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofDays(7));
-  private final ProjectCollection projects;
+  private final ProjectRepository projects;
 
   @Autowired
-  private ProjectsController(final ProjectCollection projects) {
+  private ProjectsController(final ProjectRepository projects) {
     this.projects = projects;
   }
 
@@ -60,17 +63,9 @@ public class ProjectsController {
   @GetMapping("/v2/projects")
   @Operation(summary = "Gets a list of all available projects.")
   public ResponseEntity<?> projects() {
-    final List<Project> projects = this.projects.findAll();
-    return HTTP.cachedOk(ProjectsResponse.from(projects), CACHE);
-  }
-
-  @Schema
-  private record ProjectsResponse(
-    @Schema(name = "projects")
-    List<String> projects
-  ) {
-    static ProjectsResponse from(final List<Project> projects) {
-      return new ProjectsResponse(projects.stream().map(Project::name).toList());
-    }
+    final List<ProjectEntity> projects = this.projects.findAll();
+    return HTTP.cachedOk(new ProjectsResponse(
+      projects.stream().map(ProjectEntity::name).toList()
+    ), CACHE);
   }
 }

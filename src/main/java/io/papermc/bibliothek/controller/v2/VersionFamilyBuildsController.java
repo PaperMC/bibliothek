@@ -23,14 +23,17 @@
  */
 package io.papermc.bibliothek.controller.v2;
 
-import io.papermc.bibliothek.database.model.Build;
-import io.papermc.bibliothek.database.model.Project;
-import io.papermc.bibliothek.database.model.Version;
-import io.papermc.bibliothek.database.model.VersionFamily;
-import io.papermc.bibliothek.database.repository.BuildCollection;
-import io.papermc.bibliothek.database.repository.ProjectCollection;
-import io.papermc.bibliothek.database.repository.VersionCollection;
-import io.papermc.bibliothek.database.repository.VersionFamilyCollection;
+import io.papermc.bibliothek.api.v2.model.Change2;
+import io.papermc.bibliothek.api.v2.model.Download2;
+import io.papermc.bibliothek.api.v2.response.VersionFamilyBuildsResponse;
+import io.papermc.bibliothek.database.model.BuildEntity;
+import io.papermc.bibliothek.database.model.ProjectEntity;
+import io.papermc.bibliothek.database.model.VersionEntity;
+import io.papermc.bibliothek.database.model.VersionFamilyEntity;
+import io.papermc.bibliothek.database.repository.BuildRepository;
+import io.papermc.bibliothek.database.repository.ProjectRepository;
+import io.papermc.bibliothek.database.repository.VersionFamilyRepository;
+import io.papermc.bibliothek.database.repository.VersionRepository;
 import io.papermc.bibliothek.exception.ProjectNotFound;
 import io.papermc.bibliothek.exception.VersionNotFound;
 import io.papermc.bibliothek.util.HTTP;
@@ -41,12 +44,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.constraints.Pattern;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.bson.types.ObjectId;
+import org.jspecify.annotations.NullMarked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
@@ -56,21 +55,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@NullMarked
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RestController
 public class VersionFamilyBuildsController {
   private static final CacheControl CACHE = HTTP.sMaxAgePublicCache(Duration.ofMinutes(5));
-  private final ProjectCollection projects;
-  private final VersionFamilyCollection families;
-  private final VersionCollection versions;
-  private final BuildCollection builds;
+  private final ProjectRepository projects;
+  private final VersionFamilyRepository families;
+  private final VersionRepository versions;
+  private final BuildRepository builds;
 
   @Autowired
   private VersionFamilyBuildsController(
-    final ProjectCollection projects,
-    final VersionFamilyCollection families,
-    final VersionCollection versions,
-    final BuildCollection builds
+    final ProjectRepository projects,
+    final VersionFamilyRepository families,
+    final VersionRepository versions,
+    final BuildRepository builds
   ) {
     this.projects = projects;
     this.families = families;
@@ -84,7 +84,7 @@ public class VersionFamilyBuildsController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:" + Version.PATTERN + "}/builds")
+  @GetMapping("/v2/projects/{project:[a-z]+}/version_group/{family:" + VersionEntity.PATTERN + "}/builds")
   @Operation(summary = "Gets all available builds for a project's version group.")
   public ResponseEntity<?> familyBuilds(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
@@ -93,65 +93,27 @@ public class VersionFamilyBuildsController {
     final String projectName,
     @Parameter(description = "The version group name.")
     @PathVariable("family")
-    @Pattern(regexp = Version.PATTERN) //
+    @Pattern(regexp = VersionEntity.PATTERN) //
     final String familyName
   ) {
-    final Project project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
-    final VersionFamily family = this.families.findByProjectAndName(project._id(), familyName).orElseThrow(VersionNotFound::new);
-    final Map<ObjectId, Version> versions = this.versions.findAllByProjectAndGroup(project._id(), family._id()).stream()
-      .collect(Collectors.toMap(Version::_id, Function.identity()));
-    final List<Build> builds = this.builds.findAllByProjectAndVersionIn(project._id(), versions.keySet());
-    return HTTP.cachedOk(VersionFamilyBuildsResponse.from(project, family, versions, builds), CACHE);
-  }
-
-  @Schema
-  private record VersionFamilyBuildsResponse(
-    @Schema(name = "project_id", pattern = "[a-z]+", example = "paper")
-    String project_id,
-    @Schema(name = "project_name", example = "Paper")
-    String project_name,
-    @Schema(name = "version_group", pattern = Version.PATTERN, example = "1.18")
-    String version_group,
-    @Schema(name = "versions")
-    List<String> versions,
-    @Schema(name = "builds")
-    List<VersionFamilyBuild> builds
-  ) {
-    static VersionFamilyBuildsResponse from(final Project project, final VersionFamily family, final Map<ObjectId, Version> versions, final List<Build> builds) {
-      return new VersionFamilyBuildsResponse(
-        project.name(),
-        project.friendlyName(),
-        family.name(),
-        versions.values().stream().sorted(Version.COMPARATOR).map(Version::name).toList(),
-        builds.stream().map(build -> new VersionFamilyBuild(
-          versions.get(build.version()).name(),
-          build.number(),
-          build.time(),
-          build.channelOrDefault(),
-          build.promotedOrDefault(),
-          build.changes(),
-          build.downloads()
-        )).toList()
-      );
-    }
-
-    @Schema
-    public static record VersionFamilyBuild(
-      @Schema(name = "version", pattern = Version.PATTERN, example = "1.18")
-      String version,
-      @Schema(name = "build", pattern = "\\d+", example = "10")
-      int build,
-      @Schema(name = "time")
-      Instant time,
-      @Schema(name = "channel")
-      Build.Channel channel,
-      @Schema(name = "promoted")
-      boolean promoted,
-      @Schema(name = "changes")
-      List<Build.Change> changes,
-      @Schema(name = "downloads")
-      Map<String, Build.Download> downloads
-    ) {
-    }
+    final ProjectEntity project = this.projects.findByName(projectName).orElseThrow(ProjectNotFound::new);
+    final VersionFamilyEntity family = this.families.findByProjectAndName(project, familyName).orElseThrow(VersionNotFound::new);
+    final List<VersionEntity> versions = this.versions.findAllByProjectAndGroup(project, family);
+    final List<BuildEntity> builds = this.builds.findAllByProjectAndVersionIn(project, versions);
+    return HTTP.cachedOk(new VersionFamilyBuildsResponse(
+      project.name(),
+      project.friendlyName(),
+      family.name(),
+      versions.stream().sorted(VersionEntity.COMPARATOR).map(VersionEntity::name).toList(),
+      builds.stream().map(build -> new VersionFamilyBuildsResponse.VersionFamilyBuild(
+        build.version().name(),
+        build.number(),
+        build.time(),
+        build.channelOrDefault(),
+        build.promotedOrDefault(),
+        Change2.map(build.changes()),
+        Download2.map(build.downloads())
+      )).toList()
+    ), CACHE);
   }
 }

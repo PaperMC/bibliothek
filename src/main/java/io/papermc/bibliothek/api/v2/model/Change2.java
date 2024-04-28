@@ -21,26 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.model;
+package io.papermc.bibliothek.api.v2.model;
 
-import io.papermc.bibliothek.util.BringOrderToChaos;
-import io.papermc.bibliothek.util.NameSource;
-import io.papermc.bibliothek.util.TimeSource;
-import java.time.Instant;
-import java.util.Comparator;
-import org.bson.types.ObjectId;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.papermc.bibliothek.api.model.Change;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import org.jspecify.annotations.NullMarked;
 
-@CompoundIndex(def = "{'project': 1, 'name': 1}")
-@Document(collection = "version_groups")
-public record VersionFamily(
-  @Id ObjectId _id,
-  ObjectId project,
-  String name,
-  @Nullable Instant time
-) implements NameSource, TimeSource {
-  public static final Comparator<VersionFamily> COMPARATOR = BringOrderToChaos.timeOrNameComparator();
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_COMMIT;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_MESSAGE;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_SUMMARY;
+
+@NullMarked
+@Schema
+public record Change2(
+  @JsonProperty(FIELD_COMMIT)
+  @Schema(name = FIELD_COMMIT)
+  String commit,
+
+  @JsonProperty(FIELD_SUMMARY)
+  @Schema(name = FIELD_SUMMARY)
+  String summary,
+
+  @JsonProperty(FIELD_MESSAGE)
+  @Schema(name = FIELD_MESSAGE)
+  String message
+) {
+  private Change2(final Change that) {
+    this(that.commit(), that.summary(), that.message());
+  }
+
+  public static List<Change2> map(final List<Change> list) {
+    return list
+      .stream()
+      .map(Change2::new)
+      .toList();
+  }
 }

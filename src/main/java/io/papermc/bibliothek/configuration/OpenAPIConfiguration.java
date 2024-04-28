@@ -31,11 +31,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import org.jspecify.annotations.NullMarked;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@NullMarked
 class OpenAPIConfiguration {
   @Bean
   OpenAPI openAPI(final AppConfiguration configuration) {

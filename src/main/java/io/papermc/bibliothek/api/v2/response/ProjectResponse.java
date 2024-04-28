@@ -21,13 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.exception;
+package io.papermc.bibliothek.api.v2.response;
 
-import java.io.Serial;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import org.jspecify.annotations.NullMarked;
 
+import static io.papermc.bibliothek.api.v2.Constants2.EXAMPLE_PROJECT_ID;
+import static io.papermc.bibliothek.api.v2.Constants2.EXAMPLE_PROJECT_NAME;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_PROJECT_ID;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_PROJECT_NAME;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_VERSIONS;
+import static io.papermc.bibliothek.api.v2.Constants2.FIELD_VERSION_GROUPS;
+import static io.papermc.bibliothek.api.v2.Constants2.PATTERN_PROJECT_ID;
+
 @NullMarked
-public class ProjectNotFound extends RuntimeException {
-  @Serial
-  private static final long serialVersionUID = 210738408624095602L;
+public record ProjectResponse(
+  @JsonProperty(FIELD_PROJECT_ID)
+  @Schema(name = FIELD_PROJECT_ID, pattern = PATTERN_PROJECT_ID, example = EXAMPLE_PROJECT_ID)
+  String projectId,
+
+  @JsonProperty(FIELD_PROJECT_NAME)
+  @Schema(name = FIELD_PROJECT_NAME, example = EXAMPLE_PROJECT_NAME)
+  String projectName,
+
+  @JsonProperty(FIELD_VERSION_GROUPS)
+  @Schema(name = FIELD_VERSION_GROUPS)
+  List<String> versionGroups,
+
+  @JsonProperty(FIELD_VERSIONS)
+  @Schema(name = FIELD_VERSIONS)
+  List<String> versions
+) {
 }

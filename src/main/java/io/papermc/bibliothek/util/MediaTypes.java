@@ -23,12 +23,13 @@
  */
 package io.papermc.bibliothek.util;
 
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 
+@NullMarked
 public final class MediaTypes {
-
   public static final String APPLICATION_ZIP_VALUE = "application/zip";
   public static final MediaType APPLICATION_ZIP = MediaType.parseMediaType(APPLICATION_ZIP_VALUE);
 

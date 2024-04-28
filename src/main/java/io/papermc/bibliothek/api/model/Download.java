@@ -21,17 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.model;
+package io.papermc.bibliothek.api.model;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.jspecify.annotations.NullMarked;
 
-@Document(collection = "projects")
-public record Project(
-  @Id ObjectId _id,
-  @Indexed String name,
-  String friendlyName
+@NullMarked
+public record Download(
+  String name,
+  String sha256
 ) {
 }

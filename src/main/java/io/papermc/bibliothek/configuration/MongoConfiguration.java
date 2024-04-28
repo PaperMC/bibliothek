@@ -23,6 +23,7 @@
  */
 package io.papermc.bibliothek.configuration;
 
+import org.jspecify.annotations.NullMarked;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
@@ -34,6 +35,7 @@ import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 @Configuration
+@NullMarked
 class MongoConfiguration {
   @Bean
   MappingMongoConverter mappingMongoConverter(

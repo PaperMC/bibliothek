@@ -24,7 +24,9 @@
 package io.papermc.bibliothek.exception;
 
 import java.io.Serial;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class VersionNotFound extends RuntimeException {
   @Serial
   private static final long serialVersionUID = 1716350953824887164L;

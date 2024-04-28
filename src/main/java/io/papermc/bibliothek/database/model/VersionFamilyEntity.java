@@ -21,13 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.util;
+package io.papermc.bibliothek.database.model;
 
+import io.papermc.bibliothek.util.BringOrderToChaos;
+import io.papermc.bibliothek.util.NameSource;
+import io.papermc.bibliothek.util.TimeSource;
 import java.time.Instant;
+import java.util.Comparator;
+import org.bson.types.ObjectId;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
+@CompoundIndex(def = "{'project': 1, 'name': 1}")
+@Document(collection = "version_groups")
 @NullMarked
-public interface TimeSource {
-  @Nullable Instant time();
+public class VersionFamilyEntity implements NameSource, TimeSource {
+  public static final Comparator<VersionFamilyEntity> COMPARATOR = BringOrderToChaos.timeOrNameComparator();
+
+  @Field
+  @Id
+  private ObjectId _id;
+
+  @DocumentReference
+  @Field
+  private ProjectEntity project;
+
+  @Field
+  private String name;
+
+  @Field
+  private @Nullable Instant time;
+
+  public VersionFamilyEntity() {
+  }
+
+  public ObjectId _id() {
+    return this._id;
+  }
+
+  public ProjectEntity project() {
+    return this.project;
+  }
+
+  @Override
+  public String name() {
+    return this.name;
+  }
+
+  @Override
+  public @Nullable Instant time() {
+    return this.time;
+  }
 }

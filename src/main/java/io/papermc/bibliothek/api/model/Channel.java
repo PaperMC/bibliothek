@@ -21,15 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.repository;
+package io.papermc.bibliothek.api.model;
 
-import io.papermc.bibliothek.database.model.Project;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import org.jspecify.annotations.NullMarked;
 
-@Repository
-public interface ProjectCollection extends MongoRepository<Project, ObjectId> {
-  Optional<Project> findByName(final String name);
+@NullMarked
+public enum Channel {
+  DEFAULT,
+  EXPERIMENTAL;
 }
