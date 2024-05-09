@@ -1,4 +1,5 @@
 import java.nio.file.StandardOpenOption
+import java.time.Instant
 import kotlin.io.path.Path
 import kotlin.io.path.bufferedWriter
 
@@ -13,6 +14,7 @@ plugins {
 
   alias(libs.plugins.indra)
   alias(libs.plugins.indra.checkstyle)
+  alias(libs.plugins.indra.git)
   alias(libs.plugins.jib)
   alias(libs.plugins.spotless)
   alias(libs.plugins.spring.dependency.management)
@@ -45,7 +47,10 @@ spotless {
 jib {
   to {
     image = "ghcr.io/papermc/bibliothek"
-    tags = setOf("latest", project.version.toString())
+    tags = setOf(
+      "latest",
+      "${indraGit.branchName()}-${indraGit.commit()?.name()?.take(8)}-${Instant.now().epochSecond}"
+    )
   }
 
   from {
