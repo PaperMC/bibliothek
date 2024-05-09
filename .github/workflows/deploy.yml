@@ -16,8 +16,11 @@ jobs:
     steps:
       - name: "checkout"
         uses: "actions/checkout@v4"
-      - name: "setup environment"
-        uses: "./.github/actions/setup-env/"
+      - name: "setup java"
+        uses: "actions/setup-java@v3"
+        with:
+          distribution: "zulu"
+          java-version: "17"
       - name: "check"
         run: ./gradlew check
       - name: "login"
