@@ -81,9 +81,6 @@
       <property name="checkLastCaseGroup" value="true"/>
     </module>
 
-    <!-- https://checkstyle.org/config_design.html#FinalClass -->
-    <module name="FinalClass"/>
-
     <!-- https://checkstyle.org/config_coding.html#FinalLocalVariable -->
     <module name="FinalLocalVariable">
       <property name="tokens" value="PARAMETER_DEF, VARIABLE_DEF"/> <!-- add PARAMETER_DEF -->
@@ -92,9 +89,6 @@
 
     <!-- https://checkstyle.org/config_whitespace.html#GenericWhitespace -->
     <module name="GenericWhitespace"/>
-
-    <!-- https://checkstyle.org/config_design.html#HideUtilityClassConstructor -->
-    <module name="HideUtilityClassConstructor"/>
 
     <!-- https://checkstyle.org/config_imports.html#IllegalImport -->
     <module name="IllegalImport">
@@ -135,11 +129,6 @@
 
     <!-- https://checkstyle.org/config_blocks.html#LeftCurly -->
     <module name="LeftCurly"/>
-
-    <!-- https://checkstyle.org/config_naming.html#MethodName -->
-    <module name="MethodName">
-      <property name="format" value="^(?:(?:.{1,3})|(?:[gs]et[^A-Z].*)|(?:(?:[^gsA-Z]..|.[^e].|..[^t]).+))$"/>
-    </module>
 
     <!-- https://checkstyle.org/config_whitespace.html#MethodParamPad -->
     <module name="MethodParamPad"/>

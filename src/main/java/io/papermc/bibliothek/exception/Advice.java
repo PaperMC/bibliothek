@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @ControllerAdvice
-@SuppressWarnings("checkstyle:FinalClass")
 class Advice {
   private final ObjectMapper json;
 

@@ -37,42 +37,34 @@ public class AppConfiguration {
   private String apiVersion;
   private @NotNull Path storagePath;
 
-  @SuppressWarnings("checkstyle:MethodName")
   public URL getApiBaseUrl() {
     return this.apiBaseUrl;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public void setApiBaseUrl(final URL apiBaseUrl) {
     this.apiBaseUrl = apiBaseUrl;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public String getApiTitle() {
     return this.apiTitle;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public void setApiTitle(final String apiTitle) {
     this.apiTitle = apiTitle;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public String getApiVersion() {
     return this.apiVersion;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public void setApiVersion(final String apiVersion) {
     this.apiVersion = apiVersion;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public Path getStoragePath() {
     return this.storagePath;
   }
 
-  @SuppressWarnings("checkstyle:MethodName")
   public void setStoragePath(final Path storagePath) {
     this.storagePath = storagePath;
   }

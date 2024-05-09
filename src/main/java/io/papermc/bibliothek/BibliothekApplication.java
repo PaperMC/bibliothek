@@ -34,7 +34,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 })
 @SpringBootApplication
 @ServletComponentScan
-@SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public class BibliothekApplication {
   public static void main(final String[] args) {
     SpringApplication.run(BibliothekApplication.class, args);
