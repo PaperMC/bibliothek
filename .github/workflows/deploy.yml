@@ -1,0 +1,49 @@
+name: "deploy"
+
+on:
+  push:
+    branches: ["main"]
+
+concurrency:
+  cancel-in-progress: true
+  group: "${{ github.workflow }}-${{ github.event.number || github.ref }}"
+
+jobs:
+  deploy:
+    runs-on: "ubuntu-latest"
+    outputs:
+      image-json: "${{ steps.publish.outputs.imageJson }}" # output produced from printJibMeta Gradle task
+    steps:
+      - name: "checkout"
+        uses: "actions/checkout@v4"
+      - name: "setup environment"
+        uses: "./.github/actions/setup-env/"
+      - name: "check"
+        run: ./gradlew check
+      - name: "login"
+        uses: "docker/login-action@v3"
+        with:
+          registry: "ghcr.io"
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "publish"
+        id: publish
+        run: "./gradlew jib -Djib.console=plain"
+  promote:
+    needs: "deploy"
+    runs-on: "ubuntu-latest"
+    environment: "promoted"
+    steps:
+      - name: "login"
+        uses: "docker/login-action@v3"
+        with:
+          registry: "ghcr.io"
+          username: "${{ github.actor }}"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "tag"
+        env:
+          IMAGE_ID: "${{ fromJSON(needs.deploy.outputs.image-json).imageId }}"
+          IMAGE_NAME: "${{ fromJSON(needs.deploy.outputs.image-json).image }}"
+          PROMOTED_TAG_NAME: "stable"
+        run: |
+          skopeo copy -a "docker://$IMAGE_NAME@$IMAGE_ID" "docker://$IMAGE_NAME:$PROMOTED_TAG_NAME"
