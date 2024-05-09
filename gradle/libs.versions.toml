@@ -7,7 +7,7 @@ indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 jib = { id = "com.google.cloud.tools.jib", version = "3.4.2" }
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
 spring-boot = { id = "org.springframework.boot", version = "3.2.5" }
-spring-dependency-management = { id = "io.spring.dependency-management", version = "1.1.4" }
+spring-dependency-management = { id = "io.spring.dependency-management", version = "1.1.5" }
 
 [libraries]
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version = "24.1.0" }
