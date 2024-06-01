@@ -21,24 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.filter;
+package io.papermc.bibliothek.database.model;
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.annotation.WebFilter;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.Set;
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@WebFilter("/*")
-public class CorsFilter implements Filter {
-  @Override
-  public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-    final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-    httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET");
-    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-    chain.doFilter(request, response);
-  }
+@Document(collection = "users")
+public record User(
+  @Id ObjectId _id,
+  String username,
+  String password,
+  Set<String> authorities
+) {
 }

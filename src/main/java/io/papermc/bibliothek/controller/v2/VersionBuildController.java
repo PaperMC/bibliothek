@@ -78,7 +78,10 @@ public class VersionBuildController {
     ),
     responseCode = "200"
   )
-  @GetMapping("/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}")
+  @GetMapping(
+    name = "project.version.build",
+    path = "/v2/projects/{project:[a-z]+}/versions/{version:" + Version.PATTERN + "}/builds/{build:\\d+}"
+  )
   @Operation(summary = "Gets information related to a specific build.")
   public ResponseEntity<?> build(
     @Parameter(name = "project", description = "The project identifier.", example = "paper")
