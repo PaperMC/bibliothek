@@ -1,7 +1,7 @@
 /*
  * This file is part of bibliothek, licensed under the MIT License.
  *
- * Copyright (c) 2019-2024 PaperMC
+ * Copyright (c) 2019-2023 PaperMC
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,23 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.papermc.bibliothek.database.repository;
+package io.papermc.bibliothek.exception;
 
-import io.papermc.bibliothek.database.model.Build;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import java.io.Serial;
 
-@Repository
-public interface BuildCollection extends MongoRepository<Build, ObjectId> {
-  List<Build> findAllByProjectAndVersion(final ObjectId project, final ObjectId version);
+public class ChannelNotFound extends RuntimeException {
+  @Serial
+  private static final long serialVersionUID = 1716350953824887164L;
 
-  List<Build> findAllByProjectAndVersionAndChannel(final ObjectId project, final ObjectId version, final String channel);
+  private String value;
 
-  List<Build> findAllByProjectAndVersionIn(final ObjectId project, final Collection<ObjectId> version);
+  public ChannelNotFound(final String value) {
+    super();
+    this.value = value;
+  }
 
-  Optional<Build> findByProjectAndVersionAndNumber(final ObjectId project, final ObjectId version, final int number);
+  @SuppressWarnings("checkstyle:MethodName")
+  public String getValue() {
+    return this.value;
+  }
 }

@@ -24,6 +24,9 @@
 package io.papermc.bibliothek.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.papermc.bibliothek.database.model.Build;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +72,12 @@ class Advice {
   @ResponseBody
   public ResponseEntity<?> versionNotFound(final VersionNotFound exception) {
     return this.error(HttpStatus.NOT_FOUND, "Version not found.");
+  }
+
+  @ExceptionHandler(ChannelNotFound.class)
+  @ResponseBody
+  public ResponseEntity<?> channelNotFound(final ChannelNotFound exception) {
+    return this.error(HttpStatus.NOT_FOUND, "Channel '%s' not found. Only allowed [all,%s]".formatted(exception.getValue(), EnumUtils.getEnumList(Build.Channel.class).stream().map(channel -> channel.toString().toLowerCase()).collect(Collectors.joining(","))));
   }
 
   @ExceptionHandler(NoHandlerFoundException.class)
