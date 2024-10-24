@@ -7,7 +7,7 @@ indra-checkstyle = { id = "net.kyori.indra.checkstyle", version.ref = "indra" }
 indra-git = { id = "net.kyori.indra.git", version.ref = "indra" }
 jib = { id = "com.google.cloud.tools.jib", version = "3.4.3" }
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
-spring-boot = { id = "org.springframework.boot", version = "3.2.5" }
+spring-boot = { id = "org.springframework.boot", version = "3.3.5" }
 spring-dependency-management = { id = "io.spring.dependency-management", version = "1.1.5" }
 
 [libraries]
